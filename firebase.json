@@ -20,8 +20,9 @@
     ],
     "rewrites": [
       {
-        "source": "**",
-        "destination": "/index.html"
+        "source": "/sitemap.xml",
+        "destination": "/index.html",
+        "function": "index"
       }
     ]
   }
