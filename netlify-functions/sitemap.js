@@ -18,8 +18,9 @@ const firebaseConfig = {
 // Inisialisasi Firebase
 admin.initializeApp(firebaseConfig);
 
-const db = admin.firestore();
-
+const db = admin.fireconst hostname = window.location.hostname;
+const subdomain = hostname.split('.')[0];
+const keywordFromPath = window.location.pathname.substring(1);
 // mengambil kata kunci dari FB
 
 async function getAllKeywords() {
@@ -35,7 +36,7 @@ async function generateSitemap() {
     const keywords = await getAllKeywords();
     const sitemapEntries = keywords.map(keyword => {
         const formattedKeyword = keyword.replace(/ /g, '-').toLowerCase();
-        const url = `https://(subdomain).netlify.app/${formattedKeyword}`;
+        const url = `https://${subdomain}.netlify.app/${formattedKeyword}`;
         return `
 <url>
     <loc>${url}</loc>
