@@ -18,9 +18,8 @@ const firebaseConfig = {
 // Inisialisasi Firebase
 admin.initializeApp(firebaseConfig);
 
-const db = admin.fireconst hostname = window.location.hostname;
-const subdomain = hostname.split('.')[0];
-const keywordFromPath = window.location.pathname.substring(1);
+const db = admin.firestore();
+
 // mengambil kata kunci dari FB
 
 async function getAllKeywords() {
@@ -55,7 +54,9 @@ ${sitemapEntries}
 
 exports.handler = async function(event, context) {
     try {
-        const sitemapContent = await generateSitemap();
+        const hostname = event.headers.host;  // Tambahkan baris ini
+        const subdomain = hostname.split('.')[0];  // Tambahkan baris ini
+        const sitemapContent = await generateSitemap(subdomain);  
         return {
             statusCode: 200,
             headers: {"Content-Type": "application/xml"},
