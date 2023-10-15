@@ -280,88 +280,105 @@ letter-spacing:0.69px}
                 // Initialize Firebase
                 const app = initializeApp(firebaseConfig);
                 const db = getFirestore(app);
-            
+                const hostname = window.location.hostname;
+                const subdomain = hostname.split('.')[0];
                 const keywordFromPath = window.location.pathname.substring(1);
             
-                async function getAllKeywords() {
-                    const keywordCollectionRef = collection(db, 'keyword_collections');
-                    const keywordSnapshot = await getDocs(keywordCollectionRef);
-                    return keywordSnapshot.docs.map(doc => doc.data().keyword);
-                }
+                // Fungsi untuk mendapatkan semua kata kunci
+async function getAllKeywords() {
+        const keywordCollectionRef = collection(db, 'keyword_collections');
+        const keywordSnapshot = await getDocs(keywordCollectionRef);
+        return keywordSnapshot.docs.map(doc => doc.data().keyword);
+    }
             
-                function displayKeywordsTable(keywords) {
-                    let tableHtml = '<table>';
-                    keywords.forEach(keyword => {
-                        const formattedKeyword = keyword.replace(/ /g, '-').toLowerCase();
-                        const fullUrl = `https://${keywordFromPath}.netlify.app/${formattedKeyword}`;
-                        tableHtml += `<tr><td><a href="${fullUrl}">${keyword}</a></td></tr>`;
-                    });
-                    tableHtml += '</table>';
-                    document.querySelector('.keywordTable').innerHTML = tableHtml;
-                }
+                // Fungsi untuk menampilkan tabel kata kunci
+function displayKeywordsTable(keywords) {
+    let tableHtml = '<table>';
+    keywords.forEach(keyword => {
+        const formattedKeyword = keyword.replace(/ /g, '-').toLowerCase();
+        const fullUrl = `https://${subdomain}.netlify.app/${formattedKeyword}`;  // Modifikasi di sini
+        tableHtml += `<tr><td><a href="${fullUrl}">${keyword}</a></td></tr>`;
+    });
+    tableHtml += '</table>';
+    document.querySelector('.keywordTable').innerHTML = tableHtml;
+}
             
-                getAllKeywords().then(keywords => {
-                    displayKeywordsTable(keywords);
-                }).catch(error => {
-                    console.error("Error fetching keywords:", error);
-                });
+                // Mengambil kata kunci dan menampilkan tabel
+    getAllKeywords().then(keywords => {
+        displayKeywordsTable(keywords);
+    }).catch(error => {
+        console.error("Error fetching keywords:", error);
+    });
             
-                function generateRandomSitemap() {
-                    return new Promise(async (resolve, reject) => {
-                        const sitemapContent = `<?xml version="1.0" encoding="UTF-8"?>
-            <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-            ${await generateSitemapEntries()}
-            </urlset>`;
-                        resolve(sitemapContent);
-                    });
-                }
+                // Fungsi untuk membuat sitemap XML
+function generateRandomSitemap() {
+    return new Promise(async (resolve, reject) => {
+        const sitemapContent = `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+${await generateSitemapEntries()}
+</urlset>`;
+        resolve(sitemapContent);
+    });
+}
             
-                async function generateSitemapEntries() {
-                    const keywords = await getAllKeywords();
-                    const shuffledKeywords = shuffleArray(keywords);
-                    const domain = window.location.hostname;
-                    return shuffledKeywords.map(keyword => {
-                        const sanitizedKeyword = keyword.replace(/ /g, '-').toLowerCase();
-                        const slug = sanitizedKeyword;
-                        const fullUrl = `https://${domain}/${slug}`;
-                        return `<url>
-                <loc>${fullUrl}</loc>
-                <lastmod>${new Date().toISOString().split('T')[0]}</lastmod>
-                <changefreq>daily</changefreq>
-                <priority>0.9</priority>
-            </url>`;
-                    }).join('\n');
-                }
+                // Fungsi untuk menghasilkan entri sitemap secara acak
+async function generateSitemapEntries() {
+    const keywords = await getAllKeywords(); // Ambil kata kunci dari Firebase
+
+    // Acak urutan kata kunci
+    const shuffledKeywords = shuffleArray(keywords);
+
+    const domain = window.location.hostname;
+
+    return shuffledKeywords.map(keyword => {
+        const sanitizedKeyword = keyword.replace(/ /g, '-').toLowerCase();
+        const slug = sanitizedKeyword;
+        const fullUrl = `https://${domain}/${slug}`;
+        return `<url>
+    <loc>${fullUrl}</loc>
+    <lastmod>${new Date().toISOString().split('T')[0]}</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.9</priority>
+</url>`;
+    }).join('\n');
+}
             
-                function shuffleArray(array) {
-                    const shuffledArray = [...array];
-                    for (let i = shuffledArray.length - 1; i > 0; i--) {
-                        const j = Math.floor(Math.random() * (i + 1));
-                        [shuffledArray[i], shuffledArray[j]] = [shuffledArray[j], shuffledArray[i]];
-                    }
-                    return shuffledArray;
-                }
+                // Fungsi untuk mengacak urutan elemen dalam array
+function shuffleArray(array) {
+    const shuffledArray = [...array];
+    for (let i = shuffledArray.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [shuffledArray[i], shuffledArray[j]] = [shuffledArray[j], shuffledArray[i]];
+    }
+    return shuffledArray;
+}
             
-                const sitemapContent = generateRandomSitemap();
-                const sitemapContainer = document.createElement('div');
-                sitemapContainer.style.display = 'none';
-                sitemapContainer.textContent = sitemapContent;
-                document.body.appendChild(sitemapContainer);
+                // Panggil fungsi untuk menghasilkan sitemap saat halaman dimuat
+const sitemapContent = generateRandomSitemap();
+const sitemapContainer = document.createElement('div');
+sitemapContainer.style.display = 'none';
+sitemapContainer.textContent = sitemapContent;
+document.body.appendChild(sitemapContainer);
             
-                async function addSitemapLink() {
-                    const domain = window.location.hostname;
-                    const sitemapLink = document.createElement('a');
-                    const sitemapUrl = `https://${domain}/sitemap.xml`;
-                    sitemapLink.href = sitemapUrl;
-                    sitemapLink.title = 'Sitemap';
-                    sitemapLink.innerHTML = '<strong>SITEMAP: PETA SITUS</strong>';
-                    const sitemapLinkContainer = document.getElementById('sitemapLinkContainer');
-                    sitemapLinkContainer.appendChild(sitemapLink);
-                }
+                // Fungsi untuk menambahkan tautan sitemap ke halaman HTML
+async function addSitemapLink() {
+    
+    // Memasukkan tautan sitemap
+    const domain = window.location.hostname;
+    const sitemapLink = document.createElement('a');
+    const sitemapUrl = `https://${domain}/sitemap.xml`; // Membangun URL sitemap
+    sitemapLink.href = sitemapUrl;
+    sitemapLink.title = 'Sitemap';
+    sitemapLink.innerHTML = '<strong>SITEMAP: PETA SITUS</strong>';
+    
+    const sitemapLinkContainer = document.getElementById('sitemapLinkContainer');
+    sitemapLinkContainer.appendChild(sitemapLink);
+}
             
-                document.addEventListener('DOMContentLoaded', function () {
-                    addSitemapLink();
-                });
+                // Panggil fungsi untuk menambahkan tautan sitemap saat halaman dimuat
+document.addEventListener('DOMContentLoaded', function () {
+    addSitemapLink();
+});
             
                 // Fetch from Firestore first
                 const searchResultsCollection = collection(db, 'search_results');
