@@ -15,10 +15,11 @@ const db = admin.firestore();
 // mengambil kata kunci dari FB
 
 async function getAllKeywords() {
-    const keywordCollection = collection(db, 'keyword_collections');
-    const keywordSnapshot = await getDocs(keywordCollection);
+    const keywordCollectionRef = db.collection('keyword_collections');
+    const keywordSnapshot = await keywordCollectionRef.get();
     return keywordSnapshot.docs.map(doc => doc.data().keyword);
 }
+
 
 // menghasilkan konten sitemap
 
