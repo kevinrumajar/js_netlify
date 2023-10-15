@@ -1,6 +1,6 @@
 // netlify-functions/sitemap.js
 const admin = require('firebase-admin');
-
+const serviceAccount = require('/.netlify/netlify-functions/auto-netlify-firebase-adminsdk-z4jza-fbe18d4489.json');
 // Konfigurasi Firebase
 const firebaseConfig = {
     apiKey: "AIzaSyBE3V28VDRZiDnRmbUMiyeS59qAe0vVsRQ",
@@ -9,6 +9,9 @@ const firebaseConfig = {
 };
 
 // Inisialisasi Firebase
+admin.initializeApp({
+    credential: admin.credential.cert(serviceAccount),
+  });
 admin.initializeApp(firebaseConfig);
 const db = admin.firestore();
 
