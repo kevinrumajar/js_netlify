@@ -369,19 +369,15 @@ letter-spacing:0.69px}
                 getDoc(specificDoc).then(docSnapshot => {
                     if (docSnapshot.exists()) {
                         const data = docSnapshot.data();
-                        if (data.results && Array.isArray(data.results.items)) {
-                            let article = '';
-                            data.results.items.forEach(result => {
-                                const title = result.title;
-                                const snippet = result.snippet;
-                                const h2 = '<h2>' + title + '</h2>';
-                                const p = '<p>' + snippet + '</p>';
-                                article += h2 + p;
-                            });
-                            document.getElementById('dynamicArticle').innerHTML = article;
-                        } else {
-                            console.error('Unexpected data structure:', data);
-                        }
+                        let article = '';
+                        data.results.items.forEach(result => {
+                            const title = result.title;
+                            const snippet = result.snippet;
+                            const h2 = '<h2>' + title + '</h2>';
+                            const p = '<p>' + snippet + '</p>';
+                            article += h2 + p;
+                        });
+                        document.getElementById('dynamicArticle').innerHTML = article;
                     } else {
                         const apiKey = 'AIzaSyDbAHHH8mkJvCMPBjL0l_HUAkzkN90n3Sk';
                         const engineId = '30dfd31d44f5947c1';
