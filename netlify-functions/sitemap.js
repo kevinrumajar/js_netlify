@@ -1,11 +1,17 @@
 // netlify-functions/sitemap.js
 const admin = require('firebase-admin');
-const serviceAccount = require('/.netlify/netlify-functions/auto-netlify-firebase-adminsdk-z4jza-fbe18d4489.json');
+const serviceAccount = require('./auto-netlify-firebase-adminsdk-z4jza-fbe18d4489.json');
+
 // Konfigurasi Firebase
 const firebaseConfig = {
     apiKey: "AIzaSyBE3V28VDRZiDnRmbUMiyeS59qAe0vVsRQ",
-    authDomain: "auto-netlify.firebaseapp.com",
-    projectId: "auto-netlify",
+                    authDomain: "auto-netlify.firebaseapp.com",
+                    databaseURL: "https://auto-netlify-default-rtdb.asia-southeast1.firebasedatabase.app",
+                    projectId: "auto-netlify",
+                    storageBucket: "auto-netlify.appspot.com",
+                    messagingSenderId: "738942906760",
+                    appId: "1:738942906760:web:9017d863fbdf48f6ab8a3d",
+                    measurementId: "G-G6C253B2DQ"
 };
 
 // Inisialisasi Firebase
