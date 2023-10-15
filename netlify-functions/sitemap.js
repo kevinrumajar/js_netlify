@@ -1,6 +1,5 @@
 // netlify-functions/sitemap.js
-import { initializeApp } from 'firebase/app';
-import { getFirestore, collection, getDocs } from 'firebase/firestore';
+const admin = require('firebase-admin');
 
 // Konfigurasi Firebase
 const firebaseConfig = {
@@ -10,8 +9,8 @@ const firebaseConfig = {
 };
 
 // Inisialisasi Firebase
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
+admin.initializeApp(firebaseConfig);
+const db = admin.firestore();
 
 // mengambil kata kunci dari FB
 
