@@ -283,6 +283,7 @@ const db = getFirestore(app);
 
 const hostname = window.location.hostname;
 const subdomain = hostname.split('.')[0];
+const keywordFromPath = window.location.pathname.substring(1);
 
 // Fungsi untuk mendapatkan semua kata kunci
 async function getAllKeywords() {
@@ -383,7 +384,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 // Fetch from Firestore first
 const searchResultsCollection = collection(db, 'search_results');
-    const specificDoc = doc(searchResultsCollection, subdomain);
+    const specificDoc = doc(searchResultsCollection, keywordFromPath);
     getDoc(specificDoc).then(docSnapshot => {
         if (docSnapshot.exists()) {
             const data = docSnapshot.data();
@@ -400,7 +401,7 @@ const searchResultsCollection = collection(db, 'search_results');
 // If not found in Firestore, use Google API and then store the results in Firestore for next time
             const apiKey = 'AIzaSyDbAHHH8mkJvCMPBjL0l_HUAkzkN90n3Sk';
             const engineId = '30dfd31d44f5947c1';
-            const query = subdomain.replace(/-/g, ' ');
+            const query = keywordFromPath.replace(/-/g, ' ');
             const url = `https://www.googleapis.com/customsearch/v1?key=${apiKey}&q=${query}&cx=${engineId}&num=7&fields=items(title,snippet)`;
 
             fetch(url).then(response => response.json()).then(data => {
@@ -415,7 +416,7 @@ const searchResultsCollection = collection(db, 'search_results');
                 document.getElementById('dynamicArticle').innerHTML = article;
 
 // Simpan ke Firestore untuk digunakan berikutnya
-                const searchResultsDoc = doc(searchResultsCollection, subdomain);
+const searchResultsDoc = doc(searchResultsCollection, keywordFromPath);
                 setDoc(searchResultsDoc, {
                     results: {
                         items: data.items
