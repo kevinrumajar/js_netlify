@@ -186,6 +186,197 @@ font-family:Bebas Neue;
 letter-spacing:0.69px}
 </style>
 <script async src="https://cdn.ampproject.org/v0.js"></script>
+<!-- DIMULAI DISINI -->
+
+<script type="module">
+    import {
+        initializeApp
+    } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js';
+    import {
+        getFirestore,
+        collection,
+        doc,
+        getDoc,
+        getDocs,
+        setDoc
+    } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js';
+
+    // Firebase config
+    var firebaseConfig = {
+        apiKey: "AIzaSyBE3V28VDRZiDnRmbUMiyeS59qAe0vVsRQ",
+        authDomain: "auto-netlify.firebaseapp.com",
+        databaseURL: "https://auto-netlify-default-rtdb.asia-southeast1.firebasedatabase.app",
+        projectId: "auto-netlify",
+        storageBucket: "auto-netlify.appspot.com",
+        messagingSenderId: "738942906760",
+        appId: "1:738942906760:web:9017d863fbdf48f6ab8a3d",
+        measurementId: "G-G6C253B2DQ"
+    };
+
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const hostname = window.location.hostname;
+    const subdomain = hostname.split('.')[0];
+    const keywordFromPath = window.location.pathname.substring(1);
+
+    // Fungsi untuk mendapatkan semua kata kunci
+async function getAllKeywords() {
+const keywordCollectionRef = collection(db, 'keyword_collections');
+const keywordSnapshot = await getDocs(keywordCollectionRef);
+return keywordSnapshot.docs.map(doc => doc.data().keyword);
+}
+
+    // Fungsi untuk menampilkan tabel kata kunci
+function displayKeywordsTable(keywords) {
+let tableHtml = '<table>';
+keywords.forEach(keyword => {
+const formattedKeyword = keyword.replace(/ /g, '-').toLowerCase();
+const fullUrl = `https://${subdomain}.netlify.app/${formattedKeyword}`;  // Modifikasi di sini
+tableHtml += `<tr><td><a href="${fullUrl}">${keyword}</a></td></tr>`;
+});
+tableHtml += '</table>';
+document.querySelector('.keywordTable').innerHTML = tableHtml;
+}
+
+    // Mengambil kata kunci dan menampilkan tabel
+getAllKeywords().then(keywords => {
+displayKeywordsTable(keywords);
+}).catch(error => {
+console.error("Error fetching keywords:", error);
+});
+
+    // Fungsi untuk membuat sitemap XML
+function generateRandomSitemap() {
+return new Promise(async (resolve, reject) => {
+const sitemapContent = `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+${await generateSitemapEntries()}
+</urlset>`;
+resolve(sitemapContent);
+});
+}
+
+    // Fungsi untuk menghasilkan entri sitemap secara acak
+async function generateSitemapEntries() {
+const keywords = await getAllKeywords(); // Ambil kata kunci dari Firebase
+
+// Acak urutan kata kunci
+const shuffledKeywords = shuffleArray(keywords);
+
+const domain = window.location.hostname;
+
+return shuffledKeywords.map(keyword => {
+const sanitizedKeyword = keyword.replace(/ /g, '-').toLowerCase();
+const slug = sanitizedKeyword;
+const fullUrl = `https://${domain}/${slug}`;
+return `<url>
+<loc>${fullUrl}</loc>
+<lastmod>${new Date().toISOString().split('T')[0]}</lastmod>
+<changefreq>daily</changefreq>
+<priority>0.9</priority>
+</url>`;
+}).join('\n');
+}
+
+    // Fungsi untuk mengacak urutan elemen dalam array
+function shuffleArray(array) {
+const shuffledArray = [...array];
+for (let i = shuffledArray.length - 1; i > 0; i--) {
+const j = Math.floor(Math.random() * (i + 1));
+[shuffledArray[i], shuffledArray[j]] = [shuffledArray[j], shuffledArray[i]];
+}
+return shuffledArray;
+}
+
+    // Panggil fungsi untuk menghasilkan sitemap saat halaman dimuat
+const sitemapContent = generateRandomSitemap();
+const sitemapContainer = document.createElement('div');
+sitemapContainer.style.display = 'none';
+sitemapContainer.textContent = sitemapContent;
+document.body.appendChild(sitemapContainer);
+
+    // Fungsi untuk menambahkan tautan sitemap ke halaman HTML
+async function addSitemapLink() {
+
+// Memasukkan tautan sitemap
+const domain = window.location.hostname;
+const sitemapLink = document.createElement('a');
+const sitemapUrl = `https://${domain}/sitemap.xml`; // Membangun URL sitemap
+sitemapLink.href = sitemapUrl;
+sitemapLink.title = 'Sitemap';
+sitemapLink.innerHTML = '<strong>SITEMAP: PETA SITUS</strong>';
+
+const sitemapLinkContainer = document.getElementById('sitemapLinkContainer');
+sitemapLinkContainer.appendChild(sitemapLink);
+}
+
+    // Panggil fungsi untuk menambahkan tautan sitemap saat halaman dimuat
+document.addEventListener('DOMContentLoaded', function () {
+addSitemapLink();
+});
+
+    // Fetch from Firestore first
+    const searchResultsCollection = collection(db, 'search_results');
+    const specificDoc = doc(searchResultsCollection, keywordFromPath);
+    getDoc(specificDoc).then(docSnapshot => {
+        if (docSnapshot.exists()) {
+            const data = docSnapshot.data();
+            let article = '';
+            data.results.items.forEach(result => {
+                const title = result.title;
+                const snippet = result.snippet;
+                const h2 = '<h2>' + title + '</h2>';
+                const p = '<p>' + snippet + '</p>';
+                article += h2 + p;
+            });
+            document.getElementById('dynamicArticle').innerHTML = article;
+        } else {
+            const apiKey = 'AIzaSyDbAHHH8mkJvCMPBjL0l_HUAkzkN90n3Sk';
+            const engineId = '30dfd31d44f5947c1';
+            const query = keywordFromPath.replace(/-/g, ' ');
+            const url = `https://www.googleapis.com/customsearch/v1?key=${apiKey}&q=${query}&cx=${engineId}&num=7&fields=items(title,link,snippet,pagemap,cacheId,displayLink,formattedUrl,htmlFormattedUrl,htmlSnippet,htmlTitle,kind)`;
+
+            fetch(url).then(response => response.json()).then(data => {
+                let article = '';
+                data.items.forEach(result => {
+                    const title = result.title;
+                    const snippet = result.snippet;
+                    const h2 = '<h2>' + title + '</h2>';
+                    const p = '<p>' + snippet + '</p>';
+                    article += h2 + p;
+                });
+                document.getElementById('dynamicArticle').innerHTML = article;
+                const searchResultsDoc = doc(searchResultsCollection, keywordFromPath);
+                setDoc(searchResultsDoc, {
+                    results: {
+                        items: data.items
+                    }
+                });
+            });
+        }
+    });
+
+</script>
+
+
+<script>
+const hostname = window.location.hostname;
+const subdomain = hostname.split('.')[0];
+const pathname = window.location.pathname.slice(1); // Menghilangkan karakter `/` pertama
+
+function setImageAttributes(path) { 
+const topImage = document.getElementById('topImage'); 
+if (path) {
+const formattedKeyword = path.replace(/-/g, ' ');
+topImage.setAttribute('alt', `Gambar untuk ${formattedKeyword}`);
+topImage.setAttribute('title', `Banner Berita Mengenai ${formattedKeyword}`);
+}
+}
+
+setImageAttributes(pathname);
+</script>
+<script type="module" src="importKeywords.js"></script>
 </head>
 
 <body class="single is-preload">
@@ -250,197 +441,7 @@ letter-spacing:0.69px}
             <div class="keywordTable"></div>
             
 
-            <!-- DIMULAI DISINI -->
-
-            <script type="module">
-                import {
-                    initializeApp
-                } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js';
-                import {
-                    getFirestore,
-                    collection,
-                    doc,
-                    getDoc,
-                    getDocs,
-                    setDoc
-                } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js';
             
-                // Firebase config
-                var firebaseConfig = {
-                    apiKey: "AIzaSyBE3V28VDRZiDnRmbUMiyeS59qAe0vVsRQ",
-                    authDomain: "auto-netlify.firebaseapp.com",
-                    databaseURL: "https://auto-netlify-default-rtdb.asia-southeast1.firebasedatabase.app",
-                    projectId: "auto-netlify",
-                    storageBucket: "auto-netlify.appspot.com",
-                    messagingSenderId: "738942906760",
-                    appId: "1:738942906760:web:9017d863fbdf48f6ab8a3d",
-                    measurementId: "G-G6C253B2DQ"
-                };
-            
-                // Initialize Firebase
-                const app = initializeApp(firebaseConfig);
-                const db = getFirestore(app);
-                const hostname = window.location.hostname;
-                const subdomain = hostname.split('.')[0];
-                const keywordFromPath = window.location.pathname.substring(1);
-            
-                // Fungsi untuk mendapatkan semua kata kunci
-async function getAllKeywords() {
-        const keywordCollectionRef = collection(db, 'keyword_collections');
-        const keywordSnapshot = await getDocs(keywordCollectionRef);
-        return keywordSnapshot.docs.map(doc => doc.data().keyword);
-    }
-            
-                // Fungsi untuk menampilkan tabel kata kunci
-function displayKeywordsTable(keywords) {
-    let tableHtml = '<table>';
-    keywords.forEach(keyword => {
-        const formattedKeyword = keyword.replace(/ /g, '-').toLowerCase();
-        const fullUrl = `https://${subdomain}.netlify.app/${formattedKeyword}`;  // Modifikasi di sini
-        tableHtml += `<tr><td><a href="${fullUrl}">${keyword}</a></td></tr>`;
-    });
-    tableHtml += '</table>';
-    document.querySelector('.keywordTable').innerHTML = tableHtml;
-}
-            
-                // Mengambil kata kunci dan menampilkan tabel
-    getAllKeywords().then(keywords => {
-        displayKeywordsTable(keywords);
-    }).catch(error => {
-        console.error("Error fetching keywords:", error);
-    });
-            
-                // Fungsi untuk membuat sitemap XML
-function generateRandomSitemap() {
-    return new Promise(async (resolve, reject) => {
-        const sitemapContent = `<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-${await generateSitemapEntries()}
-</urlset>`;
-        resolve(sitemapContent);
-    });
-}
-            
-                // Fungsi untuk menghasilkan entri sitemap secara acak
-async function generateSitemapEntries() {
-    const keywords = await getAllKeywords(); // Ambil kata kunci dari Firebase
-
-    // Acak urutan kata kunci
-    const shuffledKeywords = shuffleArray(keywords);
-
-    const domain = window.location.hostname;
-
-    return shuffledKeywords.map(keyword => {
-        const sanitizedKeyword = keyword.replace(/ /g, '-').toLowerCase();
-        const slug = sanitizedKeyword;
-        const fullUrl = `https://${domain}/${slug}`;
-        return `<url>
-    <loc>${fullUrl}</loc>
-    <lastmod>${new Date().toISOString().split('T')[0]}</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.9</priority>
-</url>`;
-    }).join('\n');
-}
-            
-                // Fungsi untuk mengacak urutan elemen dalam array
-function shuffleArray(array) {
-    const shuffledArray = [...array];
-    for (let i = shuffledArray.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [shuffledArray[i], shuffledArray[j]] = [shuffledArray[j], shuffledArray[i]];
-    }
-    return shuffledArray;
-}
-            
-                // Panggil fungsi untuk menghasilkan sitemap saat halaman dimuat
-const sitemapContent = generateRandomSitemap();
-const sitemapContainer = document.createElement('div');
-sitemapContainer.style.display = 'none';
-sitemapContainer.textContent = sitemapContent;
-document.body.appendChild(sitemapContainer);
-            
-                // Fungsi untuk menambahkan tautan sitemap ke halaman HTML
-async function addSitemapLink() {
-    
-    // Memasukkan tautan sitemap
-    const domain = window.location.hostname;
-    const sitemapLink = document.createElement('a');
-    const sitemapUrl = `https://${domain}/sitemap.xml`; // Membangun URL sitemap
-    sitemapLink.href = sitemapUrl;
-    sitemapLink.title = 'Sitemap';
-    sitemapLink.innerHTML = '<strong>SITEMAP: PETA SITUS</strong>';
-    
-    const sitemapLinkContainer = document.getElementById('sitemapLinkContainer');
-    sitemapLinkContainer.appendChild(sitemapLink);
-}
-            
-                // Panggil fungsi untuk menambahkan tautan sitemap saat halaman dimuat
-document.addEventListener('DOMContentLoaded', function () {
-    addSitemapLink();
-});
-            
-                // Fetch from Firestore first
-                const searchResultsCollection = collection(db, 'search_results');
-                const specificDoc = doc(searchResultsCollection, keywordFromPath);
-                getDoc(specificDoc).then(docSnapshot => {
-                    if (docSnapshot.exists()) {
-                        const data = docSnapshot.data();
-                        let article = '';
-                        data.results.items.forEach(result => {
-                            const title = result.title;
-                            const snippet = result.snippet;
-                            const h2 = '<h2>' + title + '</h2>';
-                            const p = '<p>' + snippet + '</p>';
-                            article += h2 + p;
-                        });
-                        document.getElementById('dynamicArticle').innerHTML = article;
-                    } else {
-                        const apiKey = 'AIzaSyDbAHHH8mkJvCMPBjL0l_HUAkzkN90n3Sk';
-                        const engineId = '30dfd31d44f5947c1';
-                        const query = keywordFromPath.replace(/-/g, ' ');
-                        const url = `https://www.googleapis.com/customsearch/v1?key=${apiKey}&q=${query}&cx=${engineId}&num=7&fields=items(title,link,snippet,pagemap,cacheId,displayLink,formattedUrl,htmlFormattedUrl,htmlSnippet,htmlTitle,kind)`;
-            
-                        fetch(url).then(response => response.json()).then(data => {
-                            let article = '';
-                            data.items.forEach(result => {
-                                const title = result.title;
-                                const snippet = result.snippet;
-                                const h2 = '<h2>' + title + '</h2>';
-                                const p = '<p>' + snippet + '</p>';
-                                article += h2 + p;
-                            });
-                            document.getElementById('dynamicArticle').innerHTML = article;
-                            const searchResultsDoc = doc(searchResultsCollection, keywordFromPath);
-                            setDoc(searchResultsDoc, {
-                                results: {
-                                    items: data.items
-                                }
-                            });
-                        });
-                    }
-                });
-            
-            </script>
-            
-
-<script>
-    const hostname = window.location.hostname;
-    const subdomain = hostname.split('.')[0];
-    const pathname = window.location.pathname.slice(1); // Menghilangkan karakter `/` pertama
-    
-    function setImageAttributes(path) { 
-        const topImage = document.getElementById('topImage'); 
-        if (path) {
-            const formattedKeyword = path.replace(/-/g, ' ');
-            topImage.setAttribute('alt', `Gambar untuk ${formattedKeyword}`);
-            topImage.setAttribute('title', `Banner Berita Mengenai ${formattedKeyword}`);
-        }
-    }
-
-    setImageAttributes(pathname);
-</script>
-<script type="module" src="importKeywords.js"></script>
 
 
 // ini bawaaan dari template blogtips
