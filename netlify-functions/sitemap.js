@@ -4,21 +4,20 @@ const serviceAccount = require('./auto-netlify-firebase-adminsdk-z4jza-fbe18d448
 
 // Konfigurasi Firebase
 const firebaseConfig = {
+    credential: admin.credential.cert(serviceAccount),
     apiKey: "AIzaSyBE3V28VDRZiDnRmbUMiyeS59qAe0vVsRQ",
-                    authDomain: "auto-netlify.firebaseapp.com",
-                    databaseURL: "https://auto-netlify-default-rtdb.asia-southeast1.firebasedatabase.app",
-                    projectId: "auto-netlify",
-                    storageBucket: "auto-netlify.appspot.com",
-                    messagingSenderId: "738942906760",
-                    appId: "1:738942906760:web:9017d863fbdf48f6ab8a3d",
-                    measurementId: "G-G6C253B2DQ"
+    authDomain: "auto-netlify.firebaseapp.com",
+    databaseURL: "https://auto-netlify-default-rtdb.asia-southeast1.firebasedatabase.app",
+    projectId: "auto-netlify",
+    storageBucket: "auto-netlify.appspot.com",
+    messagingSenderId: "738942906760",
+    appId: "1:738942906760:web:9017d863fbdf48f6ab8a3d",
+    measurementId: "G-G6C253B2DQ"
 };
 
 // Inisialisasi Firebase
-admin.initializeApp({
-    credential: admin.credential.cert(serviceAccount),
-  });
 admin.initializeApp(firebaseConfig);
+
 const db = admin.firestore();
 
 // mengambil kata kunci dari FB
