@@ -3,6 +3,5 @@
 
 [[redirects]]
    from = "/sitemap.xml"
-   to = "/.netlify/functions/sitemap"
+   to = "/.netlify/netlify-functions/sitemap"
    status = 200
-   
