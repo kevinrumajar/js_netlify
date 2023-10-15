@@ -1,11 +1,28 @@
 // importKeywords.js
 
-import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js';
-import { getFirestore, collection, doc, setDoc, getDoc } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js';
+<script type="module">
+    import { 
+        initializeApp 
+    } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js';
+    import { 
+        getFirestore, 
+        collection, 
+        doc, 
+        getDoc, 
+        getDocs, 
+        setDoc 
+    } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js';
 
-// Inisialisasi Firebase
-const firebaseConfig = {
-    // Konfigurasi Firebase Anda
+    // Firebase config
+var firebaseConfig = {
+    apiKey: "AIzaSyBE3V28VDRZiDnRmbUMiyeS59qAe0vVsRQ",
+    authDomain: "auto-netlify.firebaseapp.com",
+    databaseURL: "https://auto-netlify-default-rtdb.asia-southeast1.firebasedatabase.app",
+    projectId: "auto-netlify",
+    storageBucket: "auto-netlify.appspot.com",
+    messagingSenderId: "738942906760",
+    appId: "1:738942906760:web:9017d863fbdf48f6ab8a3d",
+    measurementId: "G-G6C253B2DQ"
 };
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
@@ -37,3 +54,4 @@ async function importKeywords() {
 
 // Panggil fungsi importKeywords saat halaman dimuat
 importKeywords();
+</script>
