@@ -31,7 +31,7 @@ async function getAllKeywords() {
 
 // menghasilkan konten sitemap
 
-async function generateSitemap() {
+async function generateSitemap(subdomain) {
     const keywords = await getAllKeywords();
     const sitemapEntries = keywords.map(keyword => {
         const formattedKeyword = keyword.replace(/ /g, '-').toLowerCase();
