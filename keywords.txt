@@ -1,3 +1,5 @@
 Mesin-slot
 slot-online
 mesin-slot-online
+kodok-terbang
+kodok-lari
