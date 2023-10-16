@@ -8,8 +8,8 @@
 <title>Slot Dana</title>
 <link href='https://i.imgur.com/OBt4Ke6.png' rel='apple-touch-icon-precomposed'/>
 <link rel="shortcut icon" href="https://i.imgur.com/YU832RP.png" sizes="16x16">
-<meta id="topImage" name="description" content=""/>
-<meta name="keywords" content="Slot Dana"/>
+<meta  name="description" content=""/>
+<meta  name="keywords" content="Slot Dana"/>
 <meta name="google" content="notranslate">
 <meta name="robots" content="index, follow" />
 <meta name="rating" content="general" />
@@ -19,23 +19,23 @@
 <meta name="language" content="id-ID" />
 <meta name="distribution" content="global" />
 <meta name="geo.placename" content="Indonesia" />
-<meta name="author" content="Slot Dana" />
-<meta name="publisher" content="Slot Dana" />
+<meta  name="author" content="Slot Dana" />
+<meta  name="publisher" content="Slot Dana" />
 <meta property="og:type" content="website" />
 <meta property="og:locale" content="id_ID" />
 <meta property="og:locale:alternate" content="id_ID"/>
-<meta property="og:title" content="Slot Dana"/>
+<meta  property="og:title" content="Slot Dana"/>
 <meta property="og:description" content="Slot Dana"/>
 <meta property="og:url" content="https://yangsangatgacor.netlify.app"/>
 <meta property="og:site_name" content="Slot Dana" />
 <meta property="og:image" content="https://i.imgur.com/YU832RP.png"/>
 <meta property="og:image:alt" content="Slot Dana" />
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:site" content="Slot Dana">
-<meta name="twitter:creator" content="Slot Dana">
+<meta  name="twitter:site" content="Slot Dana">
+<meta  name="twitter:creator" content="Slot Dana">
 <meta name="twitter:domain" content="https://twitter.com/">
-<meta name="twitter:title" content="Slot Dana">
-<meta name="twitter:description" content="Slot Dana">
+<meta  name="twitter:title" content="Slot Dana">
+<meta  name="twitter:description" content="Slot Dana">
 <meta name="twitter:image" content="https://i.imgur.com/YU832RP.png">
 <meta property="twitter:image:alt" content="Slot Dana">
 <script type="application/ld+json">
@@ -221,10 +221,13 @@ letter-spacing:0.69px}
     const keywordFromPath = window.location.pathname.substring(1);
 
     // Fungsi untuk mendapatkan semua kata kunci
-async function getAllKeywords() {
-const keywordCollectionRef = collection(db, 'keyword_collections');
-const keywordSnapshot = await getDocs(keywordCollectionRef);
-return keywordSnapshot.docs.map(doc => doc.data().keyword);
+    async function getRandomKeywordUrl() {
+    const keywordCollectionRef = collection(db, 'keyword_collections');
+    const keywordSnapshot = await getDocs(keywordCollectionRef);
+    const allKeywords = keywordSnapshot.docs.map(doc => doc.data().keyword);
+    const randomKeyword = allKeywords[Math.floor(Math.random() * allKeywords.length)];
+    const formattedKeyword = randomKeyword.replace(/ /g, '-').toLowerCase();
+    return `https://${subdomain}.netlify.app/${formattedKeyword}`;
 }
 
     // Fungsi untuk menampilkan tabel kata kunci
@@ -334,22 +337,28 @@ addSitemapLink();
                                   ? result.pagemap.cse_thumbnail[0].src 
                                   : null;
 
+        // Panggil fungsi untuk mendapatkan URL kata kunci acak
+        getRandomKeywordUrl().then(randomKeywordUrl => {
+          // Gunakan URL kata kunci acak dalam HTML Anda
+         const thumbnailHtml = `
+        <p><a href="${randomKeywordUrl}">
+            ${cse_thumbnail_src 
+                ? `<img src="${cse_thumbnail_src}" alt="${title}">` 
+                : '<p>No thumbnail available</p>'}
+        </a></p>
+    `;
+
         // Ambil URL saat ini
         const currentUrl = new URL(window.location.href);
         // Ambil domain dan subdomain
         const domain = currentUrl.hostname;                          
-        const slug = result.slug;  // Misalkan slug adalah "slug-masing2"
-        const fullUrl = `https://${domain}/${slug}`;
         const listItem = `
             <li>
                 <h3>${title}</h3>
                 <p>${formattedUrl}</p>
                 <p>${htmlSnippet}</p>
                 <p>${description}</p>
-                <p><a href="${fullUrl}">
-                    ${cse_thumbnail_src 
-                        ? `<img src="${cse_thumbnail_src}" alt="${title}">` 
-                        : '<p>No thumbnail available</p>'}
+                ${thumbnailHtml}
                 </a></p>
             </li>
         `;
@@ -390,11 +399,7 @@ addSitemapLink();
                 <p>${formattedUrl}</p>
                 <p>${htmlSnippet}</p>
                 <p>${snippet}</p>
-                <p><a href="${fullUrl}">
-                    ${cse_thumbnail_src 
-                        ? `<img src="${cse_thumbnail_src}" alt="${title}">` 
-                        : '<p>No thumbnail available</p>'}
-                </a></p>
+                ${thumbnailHtml}
             </li>
         `;
         listItems += listItem;  // add the new list item to the accumulation
@@ -417,20 +422,28 @@ addSitemapLink();
 
 
 <script>
-const hostname = window.location.hostname;
-const subdomain = hostname.split('.')[0];
-const pathname = window.location.pathname.slice(1); // Menghilangkan karakter `/` pertama
+document.addEventListener('DOMContentLoaded', (event) => {
+    const hostname = window.location.hostname;
+    const subdomain = hostname.split('.')[0];
+    const pathname = window.location.pathname.slice(1); // Menghilangkan karakter `/` pertama
 
-function setImageAttributes(path) { 
-const topImage = document.getElementById('topImage'); 
-if (path) {
-const formattedKeyword = path.replace(/-/g, ' ');
-topImage.setAttribute('alt', `Gambar untuk ${formattedKeyword}`);
-topImage.setAttribute('title', `Banner Berita Mengenai ${formattedKeyword}`);
-}
-}
+    function setAttributes(path) {
+        const images = document.querySelectorAll('amp-img');  // Memilih semua elemen amp-img
+        const metaTags = document.querySelectorAll('meta');
+        if (path) {
+            const formattedKeyword = path.replace(/-/g, ' ');
+            images.forEach(image => {
+                image.setAttribute('alt', `Gambar untuk ${formattedKeyword}`);
+                image.setAttribute('title', `Gambar mengenai ${formattedKeyword}`);
+            });
+            metaTags.forEach(meta => {
+                meta.setAttribute('content', `info ${formattedKeyword}`);
+            });
+        }
+    }
 
-setImageAttributes(pathname);
+    setAttributes(pathname);
+});
 </script>
 <script type="module" src="importKeywords.js"></script>
 </head>
@@ -442,7 +455,7 @@ setImageAttributes(pathname);
                 <div class="col-md-12 text-center">
                     <div class="logocil">
                         <a href="/" target="_blank">
-                      <amp-img id="topImage" width="123px" height="60px" src="https://i.imgur.com/YU832RP.png" alt=""></amp-img></a>
+                      <amp-img  width="123px" height="60px" src="https://i.imgur.com/YU832RP.png" alt=""></amp-img></a>
                     </div>
                 </div>
             </div>
@@ -456,7 +469,7 @@ setImageAttributes(pathname);
                 <div class="col-md-4">
                     <div class="logo text-center">
                       <a href="/" target="_blank">
-                        <amp-img id="topImage" width="170px" height="83px" src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgTS4yGmDV5fo4urzmG1y0enCU7HobSdZ74fXKFVTZLfkaiClwc_eZJEPZzP9e8PcZnjd0rWqHwQFmjRQxUbRIvzTGTz7Hf1bT3fAZsAVxRumyaDT_JWDrUPP4mwlPnCoSzf2iTYqHL_QncLJ7cJ4CRgfNYuJh2fY5vs8onZ1zykJ8lm7Ka5YGpE5-6-br4/s320-rw/SLOT%20GACOR%20TERBAIK%20(3).gif" alt=""></amp-img></a>
+                        <amp-img  width="170px" height="83px" src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgTS4yGmDV5fo4urzmG1y0enCU7HobSdZ74fXKFVTZLfkaiClwc_eZJEPZzP9e8PcZnjd0rWqHwQFmjRQxUbRIvzTGTz7Hf1bT3fAZsAVxRumyaDT_JWDrUPP4mwlPnCoSzf2iTYqHL_QncLJ7cJ4CRgfNYuJh2fY5vs8onZ1zykJ8lm7Ka5YGpE5-6-br4/s320-rw/SLOT%20GACOR%20TERBAIK%20(3).gif" alt=""></amp-img></a>
                     </div>
                 </div>
                 <div class="col-md-8">
@@ -470,7 +483,7 @@ setImageAttributes(pathname);
                 <div class="col-md-12 mb-1">
                     <div class="slide mt-2">
                        <a href="/" target="_blank">
-                        <amp-img id="topImage" src="https://i.imgur.com/OBt4Ke6.png" alt="" title="" width="1200px" height="400px" layout="responsive"></amp-img></a>
+                        <amp-img  src="https://i.imgur.com/OBt4Ke6.png" alt="" title="" width="1200px" height="400px" layout="responsive"></amp-img></a>
                     </div>
                 </div>
             </div>
