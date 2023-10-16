@@ -318,6 +318,7 @@ addSitemapLink();
 
     // Fetch from Firestore first
     const searchResultsCollection = collection(db, 'search_results');
+    const specificDoc = doc(searchResultsCollection, keywordFromPath);  
     getDoc(specificDoc).then(docSnapshot => {
     if (docSnapshot.exists()) {
         const data = docSnapshot.data();
