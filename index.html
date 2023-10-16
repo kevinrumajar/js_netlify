@@ -333,16 +333,19 @@ addSitemapLink();
         const cse_thumbnail_src = result.pagemap && result.pagemap.cse_thumbnail 
                                   ? result.pagemap.cse_thumbnail[0].src 
                                   : null;
-        const slug = result.slug;  // Misalkan slug adalah "slug-masing2"
-        const fullUrl = `https://${formattedUrl}/${slug}`;  // Membuat fullUrl
 
+        // Ambil URL saat ini
+        const currentUrl = new URL(window.location.href);
+        // Ambil domain dan subdomain
+        const domain = currentUrl.hostname;                          
+        const slug = result.slug;  // Misalkan slug adalah "slug-masing2"
+        const fullUrl = `https://${domain}/${slug}`;
         const listItem = `
             <li>
                 <h3>${title}</h3>
                 <p>${formattedUrl}</p>
                 <p>${htmlSnippet}</p>
                 <p>${description}</p>
-                <p>${snippet}</p>
                 <p><a href="${fullUrl}">
                     ${cse_thumbnail_src 
                         ? `<img src="${cse_thumbnail_src}" alt="${title}">` 
@@ -374,15 +377,18 @@ addSitemapLink();
         const cse_thumbnail_src = result.pagemap && result.pagemap.cse_thumbnail 
                                   ? result.pagemap.cse_thumbnail[0].src 
                                   : null;
+        // Ambil URL saat ini
+        const currentUrl = new URL(window.location.href);
+        // Ambil domain dan subdomain
+        const domain = currentUrl.hostname;
         const slug = result.slug;  // Misalkan slug adalah "slug-masing2"
-        const fullUrl = `https://${formattedUrl}/${slug}`;  // Membuat fullUrl
+        const fullUrl = `https://${domain}/${slug}`;  // Membuat fullUrl
 
         const listItem = `
             <li>
                 <h3>${title}</h3>
                 <p>${formattedUrl}</p>
                 <p>${htmlSnippet}</p>
-                <p>${description}</p>
                 <p>${snippet}</p>
                 <p><a href="${fullUrl}">
                     ${cse_thumbnail_src 
