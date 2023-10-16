@@ -325,23 +325,37 @@ getDoc(specificDoc).then(docSnapshot => {
         let article = '';
         data.results.items.forEach(result => {
             const title = result.title;
-            const snippet = result.snippet;
-            // Asumsi bahwa fields 'formattedUrl', 'host', dan 'description' ada dalam data Anda
-            const formattedUrl = result.formattedUrl;
-            const host = result.host;
-            const description = result.description;
+        const formattedUrl = result.formattedUrl;  // assuming result has a formattedUrl property
+        const htmlSnippet = result.htmlSnippet;  // assuming result has a host property
+        const description = result.description;  // assuming result has a description property
+        const snippet = result.snippet;
+        const canonical_url = result.canonical_url;  // assuming result has a canonical_url property
+        const cse_thumbnail_src = result.pagemap && result.pagemap.cse_thumbnail 
+                                  ? result.pagemap.cse_thumbnail[0].src 
+                                  : null;
+        const slug = result.slug;  // Misalkan slug adalah "slug-masing2"
+        const fullUrl = `https://${formattedUrl}/${slug}`;  // Membuat fullUrl
 
-            // Membuat markup HTML dengan fields baru
-            const h2 = '<h2>' + title + '</h2>';
-            const url = '<p>' + formattedUrl + '</p>';
-            const hostParagraph = '<p>' + host + '</p>';
-            const descriptionParagraph = '<p>' + description + '</p>';
-            const snippetParagraph = '<p>' + snippet + '</p>';
-
-            // Menggabungkan semua elemen HTML
-            article += h2 + url + hostParagraph + descriptionParagraph + snippetParagraph;
-        });
-            document.getElementById('dynamicArticle').innerHTML = article;
+        const listItem = `
+            <li>
+                <h3>${title}</h3>
+                <p>${formattedUrl}</p>
+                <p>${htmlSnippet}</p>
+                <p>${description}</p>
+                <p>${snippet}</p>
+                <p>${cse_thumbnail_src }</p>
+                <a href="${fullUrl}">
+                    ${cse_thumbnail_src 
+                        ? `<img src="${cse_thumbnail_src}" alt="${title}">` 
+                        : '<p>No thumbnail available</p>'}
+                </a>
+            </li>
+        `;
+        listItems += listItem;  // add the new list item to the accumulation
+    });
+    // Wrap the list items in a <ul> element
+    const article = `<ul>${listItems}</ul>`;
+    document.getElementById('dynamicArticle').innerHTML = article;
         } else {
             const apiKey = 'AIzaSyDbAHHH8mkJvCMPBjL0l_HUAkzkN90n3Sk';
             const engineId = '30dfd31d44f5947c1';
@@ -361,6 +375,9 @@ getDoc(specificDoc).then(docSnapshot => {
         const cse_thumbnail_src = result.pagemap && result.pagemap.cse_thumbnail 
                                   ? result.pagemap.cse_thumbnail[0].src 
                                   : null;
+        const slug = result.slug;  // Misalkan slug adalah "slug-masing2"
+        const fullUrl = `https://${formattedUrl}/${slug}`;  // Membuat fullUrl
+
         const listItem = `
             <li>
                 <h3>${title}</h3>
@@ -368,6 +385,7 @@ getDoc(specificDoc).then(docSnapshot => {
                 <p>${htmlSnippet}</p>
                 <p>${description}</p>
                 <p>${snippet}</p>
+                <p>${cse_thumbnail_src }</p>
                 <a href="${fullUrl}">
                     ${cse_thumbnail_src 
                         ? `<img src="${cse_thumbnail_src}" alt="${title}">` 
