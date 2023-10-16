@@ -242,6 +242,14 @@ tableHtml += '</table>';
 document.querySelector('.keywordTable').innerHTML = tableHtml;
 }
 
+// Fungsi untuk mendapatkan semua kata kunci
+async function getAllKeywords() {
+    const keywordCollectionRef = collection(db, 'keyword_collections');
+    const keywordSnapshot = await getDocs(keywordCollectionRef);
+    return keywordSnapshot.docs.map(doc => doc.data().keyword);
+}
+
+
     // Mengambil kata kunci dan menampilkan tabel
 getAllKeywords().then(keywords => {
 displayKeywordsTable(keywords);
@@ -322,6 +330,8 @@ sitemapLinkContainer.appendChild(sitemapLink);
     });
 });
 
+
+// fetch data
 document.addEventListener('DOMContentLoaded', function () {
     addSitemapLink();
     fetchDataAndDisplay().catch(error => {
