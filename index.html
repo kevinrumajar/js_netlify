@@ -343,12 +343,11 @@ getDoc(specificDoc).then(docSnapshot => {
                 <p>${htmlSnippet}</p>
                 <p>${description}</p>
                 <p>${snippet}</p>
-                <p>${cse_thumbnail_src }</p>
-                <a href="${fullUrl}">
+                <p><a href="${fullUrl}">
                     ${cse_thumbnail_src 
                         ? `<img src="${cse_thumbnail_src}" alt="${title}">` 
                         : '<p>No thumbnail available</p>'}
-                </a>
+                </a></p>
             </li>
         `;
         listItems += listItem;  // add the new list item to the accumulation
@@ -385,12 +384,11 @@ getDoc(specificDoc).then(docSnapshot => {
                 <p>${htmlSnippet}</p>
                 <p>${description}</p>
                 <p>${snippet}</p>
-                <p>${cse_thumbnail_src }</p>
-                <a href="${fullUrl}">
+                <p><a href="${fullUrl}">
                     ${cse_thumbnail_src 
                         ? `<img src="${cse_thumbnail_src}" alt="${title}">` 
                         : '<p>No thumbnail available</p>'}
-                </a>
+                </a></p>
             </li>
         `;
         listItems += listItem;  // add the new list item to the accumulation
