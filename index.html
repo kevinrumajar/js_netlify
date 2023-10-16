@@ -315,109 +315,103 @@ sitemapLinkContainer.appendChild(sitemapLink);
 }
 
     // Panggil fungsi untuk menambahkan tautan sitemap saat halaman dimuat
-document.addEventListener('DOMContentLoaded', function () {
-addSitemapLink();
+    document.addEventListener('DOMContentLoaded', function () {
+    addSitemapLink();
+    fetchDataAndDisplay().catch(error => {
+        console.error('Error fetching data:', error);
+    });
 });
 
-    // Fetch from Firestore first
+document.addEventListener('DOMContentLoaded', function () {
+    addSitemapLink();
+    fetchDataAndDisplay().catch(error => {
+        console.error('Error fetching data:', error);
+    });
+});
+
+async function fetchDataAndDisplay() {
     const searchResultsCollection = collection(db, 'search_results');
     const specificDoc = doc(searchResultsCollection, keywordFromPath);  
-    getDoc(specificDoc).then(docSnapshot => {
+    const docSnapshot = await getDoc(specificDoc);
+    
     if (docSnapshot.exists()) {
         const data = docSnapshot.data();
-        let listItems = '';  // initialize an empty string to accumulate list items
-        data.results.items.forEach(result => {
-        const title = result.title;
-        const formattedUrl = result.formattedUrl;  // assuming result has a formattedUrl property
-        const htmlSnippet = result.htmlSnippet;  // assuming result has a host property
-        const description = result.description;  // assuming result has a description property
-        const snippet = result.snippet;
-        const canonical_url = result.canonical_url;  // assuming result has a canonical_url property
-        const cse_thumbnail_src = result.pagemap && result.pagemap.cse_thumbnail 
-                                  ? result.pagemap.cse_thumbnail[0].src 
+        let listItems = '';  
+        
+        for (let result of data.results.items) {
+            const { title, formattedUrl, htmlSnippet, description, snippet, canonical_url, pagemap } = result;
+            const cse_thumbnail_src = pagemap && pagemap.cse_thumbnail 
+                                  ? pagemap.cse_thumbnail[0].src 
                                   : null;
 
-        // Panggil fungsi untuk mendapatkan URL kata kunci acak
-        getRandomKeywordUrl().then(randomKeywordUrl => {
-          // Gunakan URL kata kunci acak dalam HTML Anda
-         const thumbnailHtml = `
-        <p><a href="${randomKeywordUrl}">
-            ${cse_thumbnail_src 
-                ? `<img src="${cse_thumbnail_src}" alt="${title}">` 
-                : '<p>No thumbnail available</p>'}
-        </a></p>
-    `;
-
-        // Ambil URL saat ini
-        const currentUrl = new URL(window.location.href);
-        // Ambil domain dan subdomain
-        const domain = currentUrl.hostname;                          
-        const listItem = `
-            <li>
-                <h3>${title}</h3>
-                <p>${formattedUrl}</p>
-                <p>${htmlSnippet}</p>
-                <p>${description}</p>
-                ${thumbnailHtml}
+            const randomKeywordUrl = await getRandomKeywordUrl();
+            const thumbnailHtml = `
+                <p><a href="${randomKeywordUrl}">
+                    ${cse_thumbnail_src 
+                        ? `<img src="${cse_thumbnail_src}" alt="${title}">` 
+                        : '<p>No thumbnail available</p>'}
                 </a></p>
-            </li>
-        `;
-        listItems += listItem;  // add the new list item to the accumulation
-    });
-        });
-    // Wrap the list items in a <ul> element
+            `;
+
+            const listItem = createListItem(title, formattedUrl, htmlSnippet, description, thumbnailHtml);
+            listItems += listItem;
+        }
+
         const articleContent = `<ul>${listItems}</ul>`;
         document.getElementById('dynamicArticle').innerHTML = articleContent;
     } else {
-            const apiKey = 'AIzaSyDbAHHH8mkJvCMPBjL0l_HUAkzkN90n3Sk';
-            const engineId = '30dfd31d44f5947c1';
-            const query = keywordFromPath.replace(/-/g, ' ');
-            const url = `https://www.googleapis.com/customsearch/v1?key=${apiKey}&q=${query}&cx=${engineId}&num=7&fields=items(title,link,snippet,pagemap,cacheId,displayLink,formattedUrl,htmlFormattedUrl,htmlSnippet,htmlTitle,kind)`;
+        await fetchAndDisplayFromAPI();
+    }
+}
 
-            fetch(url).then(response => response.json()).then(data => {
-            let listItems = '';  // initialize an empty string to accumulate list items
-            data.items.forEach(result => {
-        // For each result, build a list item according to your template
-        const title = result.title;
-        const formattedUrl = result.formattedUrl;  // assuming result has a formattedUrl property
-        const htmlSnippet = result.htmlSnippet;  // assuming result has a host property
-        const description = result.description;  // assuming result has a description property
-        const snippet = result.snippet;
-        const canonical_url = result.canonical_url;  // assuming result has a canonical_url property
-        const cse_thumbnail_src = result.pagemap && result.pagemap.cse_thumbnail 
-                                  ? result.pagemap.cse_thumbnail[0].src 
+async function fetchAndDisplayFromAPI() {
+    const apiKey = 'AIzaSyDbAHHH8mkJvCMPBjL0l_HUAkzkN90n3Sk';
+    const engineId = '30dfd31d44f5947c1';
+    const query = keywordFromPath.replace(/-/g, ' ');
+    const url = `https://www.googleapis.com/customsearch/v1?key=${apiKey}&q=${query}&cx=${engineId}&num=7&fields=items(title,link,snippet,pagemap,cacheId,displayLink,formattedUrl,htmlFormattedUrl,htmlSnippet,htmlTitle,kind)`;
+
+    try {
+        const response = await fetch(url);
+        const data = await response.json();
+        let listItems = '';  
+
+        for (let result of data.items) {
+            const { title, formattedUrl, htmlSnippet, description, snippet, canonical_url, pagemap } = result;
+            const cse_thumbnail_src = pagemap && pagemap.cse_thumbnail 
+                                  ? pagemap.cse_thumbnail[0].src 
                                   : null;
-        // Ambil URL saat ini
-        const currentUrl = new URL(window.location.href);
-        // Ambil domain dan subdomain
-        const domain = currentUrl.hostname;
-        const slug = result.slug;  // Misalkan slug adalah "slug-masing2"
-        const fullUrl = `https://${domain}/${slug}`;  // Membuat fullUrl
 
-        const listItem = `
-            <li>
-                <h3>${title}</h3>
-                <p>${formattedUrl}</p>
-                <p>${htmlSnippet}</p>
-                <p>${snippet}</p>
-                ${thumbnailHtml}
-            </li>
-        `;
-        listItems += listItem;  // add the new list item to the accumulation
-    });
-    // Wrap the list items in a <ul> element
+            const thumbnailHtml = `
+                <p><a href="#">
+                    ${cse_thumbnail_src 
+                        ? `<img src="${cse_thumbnail_src}" alt="${title}">` 
+                        : '<p>No thumbnail available</p>'}
+                </a></p>
+            `;
+
+            const listItem = createListItem(title, formattedUrl, htmlSnippet, description, thumbnailHtml);
+            listItems += listItem;
+        }
+
         const articleContent = `<ul>${listItems}</ul>`;
-            document.getElementById('dynamicArticle').innerHTML = articleContent;
-    const searchResultsDoc = doc(searchResultsCollection, keywordFromPath);
-    setDoc(searchResultsDoc, {
-        results: {
-            items: data.items
-        }
-    });
-});
+        document.getElementById('dynamicArticle').innerHTML = articleContent;
+    } catch (error) {
+        console.error('Error fetching from API:', error);
+    }
+}
 
-        }
-    });
+function createListItem(title, formattedUrl, htmlSnippet, description, thumbnailHtml) {
+    return `
+        <li>
+            <h3>${title}</h3>
+            <p>${formattedUrl}</p>
+            <p>${htmlSnippet}</p>
+            <p>${description}</p>
+            ${thumbnailHtml}
+        </li>
+    `;
+}
+
 
 </script>
 
