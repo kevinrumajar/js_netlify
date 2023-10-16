@@ -318,13 +318,12 @@ addSitemapLink();
 
     // Fetch from Firestore first
     const searchResultsCollection = collection(db, 'search_results');
-const specificDoc = doc(searchResultsCollection, keywordFromPath);
-getDoc(specificDoc).then(docSnapshot => {
+    getDoc(specificDoc).then(docSnapshot => {
     if (docSnapshot.exists()) {
         const data = docSnapshot.data();
-        let article = '';
+        let listItems = '';  // initialize an empty string to accumulate list items
         data.results.items.forEach(result => {
-            const title = result.title;
+        const title = result.title;
         const formattedUrl = result.formattedUrl;  // assuming result has a formattedUrl property
         const htmlSnippet = result.htmlSnippet;  // assuming result has a host property
         const description = result.description;  // assuming result has a description property
@@ -353,17 +352,17 @@ getDoc(specificDoc).then(docSnapshot => {
         listItems += listItem;  // add the new list item to the accumulation
     });
     // Wrap the list items in a <ul> element
-    const article = `<ul>${listItems}</ul>`;
-    document.getElementById('dynamicArticle').innerHTML = article;
-        } else {
+        const articleContent = `<ul>${listItems}</ul>`;
+        document.getElementById('dynamicArticle').innerHTML = articleContent;
+    } else {
             const apiKey = 'AIzaSyDbAHHH8mkJvCMPBjL0l_HUAkzkN90n3Sk';
             const engineId = '30dfd31d44f5947c1';
             const query = keywordFromPath.replace(/-/g, ' ');
             const url = `https://www.googleapis.com/customsearch/v1?key=${apiKey}&q=${query}&cx=${engineId}&num=7&fields=items(title,link,snippet,pagemap,cacheId,displayLink,formattedUrl,htmlFormattedUrl,htmlSnippet,htmlTitle,kind)`;
 
             fetch(url).then(response => response.json()).then(data => {
-    let listItems = '';  // initialize an empty string to accumulate list items
-    data.items.forEach(result => {
+            let listItems = '';  // initialize an empty string to accumulate list items
+            data.items.forEach(result => {
         // For each result, build a list item according to your template
         const title = result.title;
         const formattedUrl = result.formattedUrl;  // assuming result has a formattedUrl property
@@ -394,8 +393,8 @@ getDoc(specificDoc).then(docSnapshot => {
         listItems += listItem;  // add the new list item to the accumulation
     });
     // Wrap the list items in a <ul> element
-    const article = `<ul>${listItems}</ul>`;
-    document.getElementById('dynamicArticle').innerHTML = article;
+        const articleContent = `<ul>${listItems}</ul>`;
+            document.getElementById('dynamicArticle').innerHTML = articleContent;
     const searchResultsDoc = doc(searchResultsCollection, keywordFromPath);
     setDoc(searchResultsDoc, {
         results: {
