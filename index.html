@@ -318,18 +318,29 @@ addSitemapLink();
 
     // Fetch from Firestore first
     const searchResultsCollection = collection(db, 'search_results');
-    const specificDoc = doc(searchResultsCollection, keywordFromPath);
-    getDoc(specificDoc).then(docSnapshot => {
-        if (docSnapshot.exists()) {
-            const data = docSnapshot.data();
-            let article = '';
-            data.results.items.forEach(result => {
-                const title = result.title;
-                const snippet = result.snippet;
-                const h2 = '<h2>' + title + '</h2>';
-                const p = '<p>' + snippet + '</p>';
-                article += h2 + p;
-            });
+const specificDoc = doc(searchResultsCollection, keywordFromPath);
+getDoc(specificDoc).then(docSnapshot => {
+    if (docSnapshot.exists()) {
+        const data = docSnapshot.data();
+        let article = '';
+        data.results.items.forEach(result => {
+            const title = result.title;
+            const snippet = result.snippet;
+            // Asumsi bahwa fields 'formattedUrl', 'host', dan 'description' ada dalam data Anda
+            const formattedUrl = result.formattedUrl;
+            const host = result.host;
+            const description = result.description;
+
+            // Membuat markup HTML dengan fields baru
+            const h2 = '<h2>' + title + '</h2>';
+            const url = '<p>' + formattedUrl + '</p>';
+            const hostParagraph = '<p>' + host + '</p>';
+            const descriptionParagraph = '<p>' + description + '</p>';
+            const snippetParagraph = '<p>' + snippet + '</p>';
+
+            // Menggabungkan semua elemen HTML
+            article += h2 + url + hostParagraph + descriptionParagraph + snippetParagraph;
+        });
             document.getElementById('dynamicArticle').innerHTML = article;
         } else {
             const apiKey = 'AIzaSyDbAHHH8mkJvCMPBjL0l_HUAkzkN90n3Sk';
@@ -343,7 +354,7 @@ addSitemapLink();
         // For each result, build a list item according to your template
         const title = result.title;
         const formattedUrl = result.formattedUrl;  // assuming result has a formattedUrl property
-        const host = result.host;  // assuming result has a host property
+        const htmlSnippet = result.htmlSnippet;  // assuming result has a host property
         const description = result.description;  // assuming result has a description property
         const snippet = result.snippet;
         const canonical_url = result.canonical_url;  // assuming result has a canonical_url property
@@ -354,10 +365,10 @@ addSitemapLink();
             <li>
                 <h3>${title}</h3>
                 <p>${formattedUrl}</p>
-                <p>${host}</p>
+                <p>${htmlSnippet}</p>
                 <p>${description}</p>
                 <p>${snippet}</p>
-                <a href="${canonical_url}">
+                <a href="${fullUrl}">
                     ${cse_thumbnail_src 
                         ? `<img src="${cse_thumbnail_src}" alt="${title}">` 
                         : '<p>No thumbnail available</p>'}
