@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://kipas99-slot.netlify.app/sitemap.xml
