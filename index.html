@@ -338,22 +338,45 @@ addSitemapLink();
             const url = `https://www.googleapis.com/customsearch/v1?key=${apiKey}&q=${query}&cx=${engineId}&num=7&fields=items(title,link,snippet,pagemap,cacheId,displayLink,formattedUrl,htmlFormattedUrl,htmlSnippet,htmlTitle,kind)`;
 
             fetch(url).then(response => response.json()).then(data => {
-                let article = '';
-                data.items.forEach(result => {
-                    const title = result.title;
-                    const snippet = result.snippet;
-                    const h2 = '<h2>' + title + '</h2>';
-                    const p = '<p>' + snippet + '</p>';
-                    article += h2 + p;
-                });
-                document.getElementById('dynamicArticle').innerHTML = article;
-                const searchResultsDoc = doc(searchResultsCollection, keywordFromPath);
-                setDoc(searchResultsDoc, {
-                    results: {
-                        items: data.items
-                    }
-                });
-            });
+    let listItems = '';  // initialize an empty string to accumulate list items
+    data.items.forEach(result => {
+        // For each result, build a list item according to your template
+        const title = result.title;
+        const formattedUrl = result.formattedUrl;  // assuming result has a formattedUrl property
+        const host = result.host;  // assuming result has a host property
+        const description = result.description;  // assuming result has a description property
+        const snippet = result.snippet;
+        const canonical_url = result.canonical_url;  // assuming result has a canonical_url property
+        const cse_thumbnail_src = result.pagemap && result.pagemap.cse_thumbnail 
+                                  ? result.pagemap.cse_thumbnail[0].src 
+                                  : null;
+        const listItem = `
+            <li>
+                <h3>${title}</h3>
+                <p>${formattedUrl}</p>
+                <p>${host}</p>
+                <p>${description}</p>
+                <p>${snippet}</p>
+                <a href="${canonical_url}">
+                    ${cse_thumbnail_src 
+                        ? `<img src="${cse_thumbnail_src}" alt="${title}">` 
+                        : '<p>No thumbnail available</p>'}
+                </a>
+            </li>
+        `;
+        listItems += listItem;  // add the new list item to the accumulation
+    });
+    // Wrap the list items in a <ul> element
+    const article = `<ul>${listItems}</ul>`;
+    document.getElementById('dynamicArticle').innerHTML = article;
+    const searchResultsDoc = doc(searchResultsCollection, keywordFromPath);
+    setDoc(searchResultsDoc, {
+        results: {
+            items: data.items
+        }
+    });
+});
+
         }
     });
 
