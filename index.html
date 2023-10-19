@@ -71,20 +71,10 @@ animation:none}</style></noscript>
 <!-- DIMULAI DISINI -->
 
 <script type="module">
-    import {
-        initializeApp
-    } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js';
-    import {
-        getFirestore,
-        collection,
-        doc,
-        getDoc,
-        getDocs,
-        setDoc,
-    } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js';
-
-    // Firebase config
-    var firebaseConfig = {
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js';
+    import { getFirestore, collection, doc, getDoc, getDocs, addDoc, setDoc } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js';// Firebase config
+    
+        var firebaseConfig = {
         apiKey: "AIzaSyBE3V28VDRZiDnRmbUMiyeS59qAe0vVsRQ",
         authDomain: "auto-netlify.firebaseapp.com",
         databaseURL: "https://auto-netlify-default-rtdb.asia-southeast1.firebasedatabase.app",
@@ -245,7 +235,7 @@ sitemapLinkContainer.appendChild(sitemapLink);
             // ... metrik analisis lainnya ...
         };
         return insights;
-
+    }
 
 // fetch data
 document.addEventListener('DOMContentLoaded', function () {
@@ -337,10 +327,13 @@ function createListItem(title, formattedUrl, htmlSnippet, description, thumbnail
         </li>
     `;
 }
-</script>
 
-<script>
 document.addEventListener('DOMContentLoaded', async function() {
+    async function getAllKeywords() {
+    const keywordCollectionRef = collection(db, 'keyword_collections');
+    const keywordSnapshot = await getDocs(keywordCollectionRef);
+    return keywordSnapshot.docs.map(doc => doc.data().keyword);
+}
     // Dapatkan kata kunci acak dari Firebase
     const keywords = await getAllKeywords(); // Asumsi fungsi ini mengambil semua kata kunci sebagai array
     const keyword = keywords[Math.floor(Math.random() * keywords.length)];
@@ -373,7 +366,6 @@ document.addEventListener('DOMContentLoaded', async function() {
 });
 </script>
 
-<script type="module" src="importKeywords.js"></script>
 </head>
 
 <body class="single is-preload">
