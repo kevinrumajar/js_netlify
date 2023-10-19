@@ -1,184 +1,537 @@
-import os
-import requests
-import firebase_admin
-import random
-import logging
-from datetime import date
-from firebase_admin import credentials, firestore
-from flask import Flask, request, jsonify, render_template
-from urllib.parse import urlparse
+<!DOCTYPE html>
+<html ⚡ lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="google-site-verification" content="Pepv7bqNjkkFq9RB3AxSFGZpq_irenZjmgIEiAEhlZg" />
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+<link rel="canonical" href="https://yangsangatgacor.netlify.app/" />
+<title>Slot Dana</title>
+<link href='https://i.imgur.com/OBt4Ke6.png' rel='apple-touch-icon-precomposed'/>
+<link rel="shortcut icon" href="https://i.imgur.com/YU832RP.png" sizes="16x16">
+<meta  name="description" content=""/>
+<meta  name="keywords" content="Slot Dana"/>
+<meta name="google" content="notranslate">
+<meta name="robots" content="index, follow" />
+<meta name="rating" content="general" />
+<meta name="geo.region" content="id_ID" />
+<meta name="googlebot" content="index,follow">
+<meta name="geo.country" content="id" />
+<meta name="language" content="id-ID" />
+<meta name="distribution" content="global" />
+<meta name="geo.placename" content="Indonesia" />
+<meta  name="author" content="Slot Dana" />
+<meta  name="publisher" content="Slot Dana" />
+<meta property="og:type" content="website" />
+<meta property="og:locale" content="id_ID" />
+<meta property="og:locale:alternate" content="id_ID"/>
+<meta  property="og:title" content="Slot Dana"/>
+<meta property="og:description" content="Slot Dana"/>
+<meta property="og:url" content="https://yangsangatgacor.netlify.app"/>
+<meta property="og:site_name" content="Slot Dana" />
+<meta property="og:image" content="https://i.imgur.com/YU832RP.png"/>
+<meta property="og:image:alt" content="Slot Dana" />
+<meta name="twitter:card" content="summary_large_image">
+<meta  name="twitter:site" content="Slot Dana">
+<meta  name="twitter:creator" content="Slot Dana">
+<meta name="twitter:domain" content="https://twitter.com/">
+<meta  name="twitter:title" content="Slot Dana">
+<meta  name="twitter:description" content="Slot Dana">
+<meta name="twitter:image" content="https://i.imgur.com/YU832RP.png">
+<meta property="twitter:image:alt" content="Slot Dana">
+<script type="application/ld+json">
+            {
+                "@context": "http://schema.org",
+                "@type": "Articles",
+                "name": "Slot Dana",
+                "author": { "@type": "Person", "name": "Slot Dana" },
+                "headline": "Slot Dana",
+                "description": "Slot DanaI",
+                "keywords": ["Slot Dana"],
+                "image": "https://blogger.googleusercontent.com/img/a/AVvXsEjH4xa-UgeV3VkmqMxv-ZCyGsdXmUGRzqm5fhdGcxO8kMBeSt8fw1UVl61plDV-jXGOmz4vVZdJiN8FB-4hoV-Tke2YXlAdgte5VKGCmpgVWlUPuM9T2AcXFURKSrCoJLLSB1gVmX2EFWqjChJYAPJ6MZC5-IuR7r_hed7uHtbRnGo4mboCOpKZIcc5=s254",
+                "url": "https://i.imgur.com/YU832RP.png",
+                "publisher": { "@type": "Organization", "name": "Slot Dana" },
+                "aggregateRating": { "@type": "AggregateRating", "ratingValue": "96", "bestRating": "100", "worstRating": "0", "ratingCount": "2574391" },
+                "inLanguage": "id-ID"
+            }
+</script>
+<link rel="preload" as="script" href="https://cdn.ampproject.org/v0.js">
+<link rel="preconnect" href="https://fonts.gstatic.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">		
+ <style amp-boilerplate>body{-webkit-animation:-amp-start 8s steps(1,end) 0s 1 normal both;
+-moz-animation:-amp-start 8s steps(1,end) 0s 1 normal both;
+-ms-animation:-amp-start 8s steps(1,end) 0s 1 normal both;
+animation:-amp-start 8s steps(1,end) 0s 1 normal both}@-webkit-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@-moz-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@-ms-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@-o-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}</style>
+<noscript>
+	<style amp-boilerplate>body{-webkit-animation:none;
+-moz-animation:none;
+-ms-animation:none;
+animation:none}</style></noscript>	
+<style amp-custom>
+html{font-family:sans-serif;
+-webkit-text-size-adjust:100%;
+-ms-text-size-adjust:100%}a,body,center,div,em,footer,h1,h2,h3,h4,h5,h6,header,html,iframe,img,li,menu,nav,ol,p,span,table,tbody,td,tfoot,th,thead,tr,ul{margin:0;
+padding:0;
+border:0;
+font-size:100%;
+font:inherit;
+vertical-align:baseline}a,a:active,a:focus{outline:0;
+text-decoration:none}a{color:#fff}*{padding:0;
+margin:0;
+-moz-box-sizing:border-box;
+-webkit-box-sizing:border-box;
+box-sizing:border-box}h1,h2,h3,h4,h5,h6{margin-top:0;
+margin-bottom:.5rem}p{margin:0 0 10px}p{margin-top:0;
+margin-bottom:1rem}.clear{clear:both}.text-center{text-align:center}.align-middle{vertical-align:middle}body{background:linear-gradient(90deg,#9E0202 0,#0300C2 100%)}.container{padding-right:15px;
+padding-left:15px;
+margin-right:auto;
+margin-left:auto}.marquee{font-family: 'Trebuchet MS';
+background:linear-gradient(#8339cd,#050042);
+color: white;
+padding:5px 0;
+border:1px solid white;
+border-radius:5px;
+max-width:100%;
+text-align:center}
+.btn {
+    background: linear-gradient(to bottom,#e63c2e 0,#31160a 100%);
+    display: inline-block;
+    padding: 9px 12px;
+    touch-action: manipulation;
+    cursor: pointer;
+    user-select: none;
+    border: 1px solid transparent;
+    border-radius: 5px;
+    font: 400 22px Bebas Neue;
+    width: 100%;
+    color: #fff;
+    letter-spacing: 1.5px;
+}
+.btn:hover{box-shadow:0 0 5px 3px #fff}.btn-daf{animation:blinking 1s infinite;
+transition:all .4s}@keyframes blinking{0%{border:2px solid #533c98}100%{border:2px solid #ff9626}}.blink-me{animation-name:blinker;
+animation-duration:1s;
+animation-timing-function:linear;
+animation-iteration-count:infinite}.anim{animation:blinkings 1s infinite}@keyframes blinkings{0%{border:2px solid #fff}100%{border:2px solid #054487}}@media (min-width:768px){.container{max-width:720px}
+.marquee {
+	font-size:20px
+		}
+			}@media (min-width:992px){.container{max-width:960px}}@media (min-width:1200px){.container{width:1000px}}.row{display:-ms-flexbox;
+display:flex;
+-ms-flex-wrap:wrap;
+flex-wrap:wrap;
+margin-right:-15px;
+margin-left:-15px}.p-0{padding:0}.col-md-12,.col-md-4,.col-md-6,.col-md-8,.col-xs-6{position:relative;
+width:100%;
+padding-right:15px;
+padding-left:15px}.col-xs-6{float:left;
+width:50%}@media (min-width:768px){.navbar{display:none}.col-md-4{-ms-flex:0 0 33.333333%;
+flex:0 0 33.333333%;
+max-width:33.333333%}.col-md-6{-ms-flex:0 0 50%;
+flex:0 0 50%;
+max-width:50%}.col-md-8{-ms-flex:0 0 66.666667%;
+flex:0 0 66.666667%;
+max-width:66.666667%}.col-md-12{-ms-flex:0 0 100%;
+flex:0 0 100%;
+width:100%}.order-first{-ms-flex-order:-1;
+order:-1}.logocil,.mob{display:none}.logform{padding-top:1.3rem}.nopadding{padding:0}.mob{display:none}}@media (max-width:768px){.des,.logo{display:none}.navbar{position:fixed;
+background-color:#131313;
+right:0;
+left:0;
+z-index:1030;
+min-height:50px;
+width:100%;
+float:left;
+padding:5px}.content{padding-top:0}.border-bt{border-bottom:1px solid #dee2e6;
+border-top:1px solid #dee2e6;
+padding:5px 15px}.marquee{font-size:4vw}.space{padding-top:72px}.mob{display:block}}.pt-1,.py-1{padding-top:.25rem}.pb-1,.py-1{padding-bottom:.25rem}.pt-2,.py-2{padding-top:.5rem}.pb-2,.py-2{padding-bottom:.5rem}.mt-2,.my-2{margin-top:.5rem}.mb-2,.my-2{margin-bottom:.5rem}.mt-3,.my-3{margin-top:.75rem}.mb-3,.my-3{margin-bottom:.75rem}.mt-4{margin-top:1.1rem}.mt-5,.my-5{margin-top:2rem}.mb-5,.my-5{margin-bottom:2rem}.pb-5{padding-bottom:1.25rem}.mx-5{margin-left:.75rem;
+margin-right:.75rem}.pt-3{padding-top:1rem}.pt-5{padding-top:2rem}.bg-dark{background-color:#020202}.slide{width:100%;
+border:1px solid #b1361d;
+border-radius:4px;
+box-shadow:0 0 6px 1px #4c3494}.slide img{object-fit:contain}.social-card{display:block;
+background-image:linear-gradient(#8339cd,#050042);
+padding:9px 12px;
+border-radius:5px;
+font-weight:700;
+font-family:Bebas Neue;
+font-size:22px;
+transition:.2s all;
+position:relative;
+color:#fff;
+border:1px solid #00d0ff;
+letter-spacing:1.1px;
+box-shadow:0 0 6px 1px #c52fdb}.social-card img{object-fit:contain}.social-card:focus,.social-card:hover{box-shadow:0 0 6px 4px #fff}.info{background-image:linear-gradient(#8339cd,#050042);
+color:#fff;
+font-family:Bebas Neue;
+transition:.2s all;
+position:relative;
+border:1px solid #00d0ff;
+border-radius:5px;
+letter-spacing:1.2px;
+padding:10px 10px 0;
+line-height:.99;
+box-shadow:0 0 6px 1px #c52fdb}.info h3{font-size:26px;
+color:#56dff1}
+.info p{
+	border-bottom:1px solid #dee2e6
+	}
+.bottom{float:left;
+width:100%}.word{color:#fff;
+padding:20px 30px;
+border-radius:5px;
+border:1px dashed #4c3494;
+font-family:Bebas Neue}.word h1{font-size:1.5em}.word h2{font-size:1.3em}.word h3{font-size:1.1em}.word p{font-size:1em}.word a{color:#aaa}.footer{text-decoration:none;
+color:#fff}.chat{border-radius:10px;
+box-shadow:0 0 6px 1px #fff}.chat:hover{opacity:0.8}table. {color:white}table.td, table.th {border:1px solid #f98f15;
+padding:6px;
+font-family:Bebas Neue;
+letter-spacing:0.69px}
+</style>
+<script async src="https://cdn.ampproject.org/v0.js"></script>
+<!-- DIMULAI DISINI -->
 
-# Mengatur logging
-logging.basicConfig(level=logging.DEBUG)
+<script type="module">
+    import {
+        initializeApp
+    } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js';
+    import {
+        getFirestore,
+        collection,
+        doc,
+        getDoc,
+        getDocs,
+        setDoc
+    } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js';
+
+    // Firebase config
+    var firebaseConfig = {
+        apiKey: "AIzaSyBE3V28VDRZiDnRmbUMiyeS59qAe0vVsRQ",
+        authDomain: "auto-netlify.firebaseapp.com",
+        databaseURL: "https://auto-netlify-default-rtdb.asia-southeast1.firebasedatabase.app",
+        projectId: "auto-netlify",
+        storageBucket: "auto-netlify.appspot.com",
+        messagingSenderId: "738942906760",
+        appId: "1:738942906760:web:9017d863fbdf48f6ab8a3d",
+        measurementId: "G-G6C253B2DQ"
+    };
+
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const hostname = window.location.hostname;
+    const subdomain = hostname.split('.')[0];
+    const keywordFromPath = window.location.pathname.substring(1);
+
+    // Fungsi untuk mendapatkan semua kata kunci
+    async function getRandomKeywordUrl() {
+    const keywordCollectionRef = collection(db, 'keyword_collections');
+    const keywordSnapshot = await getDocs(keywordCollectionRef);
+    const allKeywords = keywordSnapshot.docs.map(doc => doc.data().keyword);
+    const randomKeyword = allKeywords[Math.floor(Math.random() * allKeywords.length)];
+    const formattedKeyword = randomKeyword.replace(/ /g, '-').toLowerCase();
+    return `https://${subdomain}.netlify.app/${formattedKeyword}`;
+}
+
+    // Fungsi untuk menampilkan tabel kata kunci
+function displayKeywordsTable(keywords) {
+let tableHtml = '<table>';
+keywords.forEach(keyword => {
+const formattedKeyword = keyword.replace(/ /g, '-').toLowerCase();
+const fullUrl = `https://${subdomain}.netlify.app/${formattedKeyword}`;  // Modifikasi di sini
+tableHtml += `<tr><td><a href="${fullUrl}">${keyword}</a></td></tr>`;
+});
+tableHtml += '</table>';
+document.querySelector('.keywordTable').innerHTML = tableHtml;
+}
+
+// Fungsi untuk mendapatkan semua kata kunci
+async function getAllKeywords() {
+    const keywordCollectionRef = collection(db, 'keyword_collections');
+    const keywordSnapshot = await getDocs(keywordCollectionRef);
+    return keywordSnapshot.docs.map(doc => doc.data().keyword);
+}
 
 
-# Konfigurasi Firebase dan Google Custom Search
-CRED_PATH = "C:\\Users\\Acer\\netlify_firebase\\auto-netlify-firebase-adminsdk-z4jza-fbe18d4489.json"
-API_KEY = 'AIzaSyDbAHHH8mkJvCMPBjL0l_HUAkzkN90n3Sk' 
-CSE_ID = '30dfd31d44f5947c1'      
+    // Mengambil kata kunci dan menampilkan tabel
+getAllKeywords().then(keywords => {
+displayKeywordsTable(keywords);
+}).catch(error => {
+console.error("Error fetching keywords:", error);
+});
 
-# Inisialisasi Firebase
-cred = credentials.Certificate(CRED_PATH)
-firebase_admin.initialize_app(cred)
-db = firestore.client()
+    // Fungsi untuk membuat sitemap XML
+function generateRandomSitemap() {
+return new Promise(async (resolve, reject) => {
+const sitemapContent = `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+${await generateSitemapEntries()}
+</urlset>`;
+resolve(sitemapContent);
+});
+}
 
-# Muat kata kunci dari file dan simpan ke Firestore
-try:
-    with open('keywords.txt', 'r') as file:
-        keywords = file.readlines()
-except FileNotFoundError:
-    print("File keywords.txt not found.")
-    keywords = []
+    // Fungsi untuk menghasilkan entri sitemap secara acak
+async function generateSitemapEntries() {
+const keywords = await getAllKeywords(); // Ambil kata kunci dari Firebase
+
+// Acak urutan kata kunci
+const shuffledKeywords = shuffleArray(keywords);
+
+const domain = window.location.hostname;
+
+return shuffledKeywords.map(keyword => {
+const sanitizedKeyword = keyword.replace(/ /g, '-').toLowerCase();
+const slug = sanitizedKeyword;
+const fullUrl = `https://${domain}/${slug}`;
+return `<url>
+<loc>${fullUrl}</loc>
+<lastmod>${new Date().toISOString().split('T')[0]}</lastmod>
+<changefreq>daily</changefreq>
+<priority>0.9</priority>
+</url>`;
+}).join('\n');
+}
+
+    // Fungsi untuk mengacak urutan elemen dalam array
+function shuffleArray(array) {
+const shuffledArray = [...array];
+for (let i = shuffledArray.length - 1; i > 0; i--) {
+const j = Math.floor(Math.random() * (i + 1));
+[shuffledArray[i], shuffledArray[j]] = [shuffledArray[j], shuffledArray[i]];
+}
+return shuffledArray;
+}
+
+    // Panggil fungsi untuk menghasilkan sitemap saat halaman dimuat
+const sitemapContent = generateRandomSitemap();
+const sitemapContainer = document.createElement('div');
+sitemapContainer.style.display = 'none';
+sitemapContainer.textContent = sitemapContent;
+document.body.appendChild(sitemapContainer);
+
+    // Fungsi untuk menambahkan tautan sitemap ke halaman HTML
+async function addSitemapLink() {
+
+// Memasukkan tautan sitemap
+const domain = window.location.hostname;
+const sitemapLink = document.createElement('a');
+const sitemapUrl = `https://${domain}/sitemap.xml`; // Membangun URL sitemap
+sitemapLink.href = sitemapUrl;
+sitemapLink.title = 'Sitemap';
+sitemapLink.innerHTML = '<strong>SITEMAP: PETA SITUS</strong>';
+
+const sitemapLinkContainer = document.getElementById('sitemapLinkContainer');
+sitemapLinkContainer.appendChild(sitemapLink);
+}
+
+    // Panggil fungsi untuk menambahkan tautan sitemap saat halaman dimuat
+    document.addEventListener('DOMContentLoaded', function () {
+    addSitemapLink();
+    fetchDataAndDisplay().catch(error => {
+        console.error('Error fetching data:', error);
+    });
+});
 
 
-# Periksa dan simpan kata kunci ke Firestore
-for keyword in keywords:
-    original_keyword = keyword  # menyimpan kata kunci asli untuk debug
-    keyword = keyword.strip()
-    cleaned_keyword = keyword.replace('.', '-').replace('/', '_')
+// fetch data
+document.addEventListener('DOMContentLoaded', function () {
+    addSitemapLink();
+    fetchDataAndDisplay().catch(error => {
+        console.error('Error fetching data:', error);
+    });
+});
 
-    # Hapus spasi dan karakter '/' dari awal dan akhir cleaned_keyword
-    cleaned_keyword = cleaned_keyword.strip().strip('/')
-
-    # Pastikan cleaned_keyword tidak kosong setelah pembersihan
-    if cleaned_keyword:
-        # Mengecek jika kata kunci sudah ada di database
-        if not db.collection('keyword_collections').document(cleaned_keyword).get().exists:
-            db.collection('keyword_collections').document(cleaned_keyword).set({'keyword': keyword})
-    else:
-        print(f"Kata kunci asli '{original_keyword}' setelah pembersihan menjadi kosong dan tidak valid sebagai ID dokumen.")
-
-app = Flask(__name__)
-
-# Membersihkan data untuk Firebase
-def clean_data_for_firebase(data):
-    """Membersihkan data agar sesuai dengan aturan Firebase (mengganti karakter yang tidak diperbolehkan)"""
-    if isinstance(data, dict):
-        return {k.replace('.', '-').replace('$', 'S').replace('#', 'H').replace('[', 'O').replace(']', 'C').replace('/', 'SL'): clean_data_for_firebase(v) for k, v in data.items()}
-    elif isinstance(data, list):
-        return [clean_data_for_firebase(item) for item in data]
-    else:
-        return data
-
-@app.route('/', methods=['GET'])
-def search_and_store():
-    """Mengembalikan hasil pencarian berdasarkan subdomain dan menyimpan hasil pencarian ke Firebase"""
-    host = request.headers.get('Host')
-    parsed_host = urlparse(f"http://{host}")
-    domain_parts = parsed_host.netloc.split('.')
-    # Ambil hanya bagian domain utama dan TLD (misalnya, ambil 'domain.com' dari 'sub.domain.com')
-    domain = '.'.join(domain_parts[-2:]) 
-    subdomain = host.split('.')[0] if '.' in host else None
-    print(f"Subdomain: {subdomain}")  # Debugging
-
-    spintax_choices = ["berita keren", "info Terbaru"]
-    selected_spintax = random.choice(spintax_choices)
-    title = f"{selected_spintax.title()}"  # Ini akan memanggil metode title() dan mengembalikan string yang dimodifikasi.
-    print(f"type of selected_spintax: {type(selected_spintax)}")
-    print(f"type of subdomain: {type(subdomain)}")
-    print(f"selected_spintax: {selected_spintax}")
-    print(f"subdomain: {subdomain}")
-
-    if not subdomain:
-        return jsonify({"error": "Subdomain is required"}), 400
-
-    # Cek hasil pencarian di Firestore
-    keyword_ref = db.collection('search_results').document(subdomain)
-    try:
-        saved_results = keyword_ref.get().to_dict()
-    except Exception as e:
-        logging.exception(f"Failed to fetch data from Firestore: {e}")
-        print(f"Failed to fetch data from Firestore: {e}")
-        saved_results = None
-
-    keywords_ref = db.collection('keyword_collections')
-    from random import shuffle
-    keywords_docs = keywords_ref.limit(1000).stream()
-    keywords_list = [doc.id for doc in keywords_docs]
-    shuffle(keywords_list)
-
-    # Membuat tabel dengan konten dari kata kunci
-    table_rows = 36
-    table_cols = 5
-    table_content = []
-    for _ in range(table_rows):
-        row_content = keywords_list[:table_cols]
-        keywords_list = keywords_list[table_cols:]
-        table_content.append(row_content)
-
-    if saved_results and 'results' in saved_results:
-        return render_template('results.html', results=saved_results['results'], title=title, host=host, canonical_url=request.url, domain=domain, keywords=keywords_list, table_content=table_content), 200
-
-    # Jika belum ada di Firestore, gunakan Google Custom Search API
-    search_url = f"https://www.googleapis.com/customsearch/v1?q={subdomain}&key={API_KEY}&cx={CSE_ID}"
-    try:
-        response = requests.get(search_url)
-        response.raise_for_status()
-        search_results = response.json().get('items', [])
-        print(f"Search results from Google API: {search_results}")
-        logging.debug(f"Search results from Google API: {search_results}")
-    except requests.exceptions.HTTPError as e:
-        logging.error(f"Request returned status code {response.status_code}")
-        return jsonify({"error": f"Request returned status code {response.status_code}"}), 500
-    except Exception as e:
-        logging.error(f"Failed to fetch search results: {str(e)}")
-        return jsonify({"error": f"Failed to fetch search results: {str(e)}"}), 500
+async function fetchDataAndDisplay() {
+    const searchResultsCollection = collection(db, 'search_results');
+    const specificDoc = doc(searchResultsCollection, keywordFromPath);  
+    const docSnapshot = await getDoc(specificDoc);
     
+    if (docSnapshot.exists()) {
+        const data = docSnapshot.data();
+        let listItems = '';  
+        
+        for (let result of data.results.items) {
+            const { title, formattedUrl, htmlSnippet, description, snippet, canonical_url, pagemap } = result;
+            const cse_thumbnail_src = pagemap && pagemap.cse_thumbnail 
+                                  ? pagemap.cse_thumbnail[0].src 
+                                  : null;
 
-        # ... kode sebelumnya ...
+            const randomKeywordUrl = await getRandomKeywordUrl();
+            const thumbnailHtml = `
+                <p><a href="${randomKeywordUrl}">
+                    ${cse_thumbnail_src 
+                        ? `<img src="${cse_thumbnail_src}" alt="${title}">` 
+                        : '<p>No thumbnail available</p>'}
+                </a></p>
+            `;
 
-    # Membersihkan data dan menyimpan hasil pencarian ke Firestore
-    cleaned_results = clean_data_for_firebase(search_results)
-    data_to_save = {"results": cleaned_results}
-    keyword_ref.set(data_to_save)
+            const listItem = createListItem(title, formattedUrl, htmlSnippet, description, thumbnailHtml);
+            listItems += listItem;
+        }
 
-    if saved_results and 'results' in saved_results:
-        for item in saved_results.get('results', []):
-            if 'title' not in item:
-                logging.warning(f"Missing title in item: {item}")
-        return render_template('results.html', results=saved_results['results'], title=title, domain=domain, host=host, canonical_url=request.url, keywords=keywords_list, table_content=table_content), 200
-    else:
-        # Pastikan mengirim 'search_results', bukan 'saved_results'
-        return render_template('results.html', results=search_results, title=title, host=host, domain=domain, canonical_url=request.url, keywords=keywords_list, table_content=table_content), 200
+        const articleContent = `<ul>${listItems}</ul>`;
+        document.getElementById('dynamicArticle').innerHTML = articleContent;
+    } else {
+        await fetchAndDisplayFromAPI();
+    }
+}
+
+async function fetchAndDisplayFromAPI() {
+    const apiKey = 'AIzaSyDbAHHH8mkJvCMPBjL0l_HUAkzkN90n3Sk';
+    const engineId = '30dfd31d44f5947c1';
+    const query = keywordFromPath.replace(/-/g, ' ');
+    const url = `https://www.googleapis.com/customsearch/v1?key=${apiKey}&q=${query}&cx=${engineId}&num=7&fields=items(title,link,snippet,pagemap,cacheId,displayLink,formattedUrl,htmlFormattedUrl,htmlSnippet,htmlTitle,kind)`;
+
+    try {
+        const response = await fetch(url);
+        const data = await response.json();
+        let listItems = '';  
+
+        for (let result of data.items) {
+            const { title, formattedUrl, htmlSnippet, description, snippet, canonical_url, pagemap } = result;
+            const cse_thumbnail_src = pagemap && pagemap.cse_thumbnail 
+                                  ? pagemap.cse_thumbnail[0].src 
+                                  : null;
+
+            const thumbnailHtml = `
+                <p><a href="#">
+                    ${cse_thumbnail_src 
+                        ? `<img src="${cse_thumbnail_src}" alt="${title}">` 
+                        : '<p>No thumbnail available</p>'}
+                </a></p>
+            `;
+
+            const listItem = createListItem(title, formattedUrl, htmlSnippet, description, thumbnailHtml);
+            listItems += listItem;
+        }
+
+        const articleContent = `<ul>${listItems}</ul>`;
+        document.getElementById('dynamicArticle').innerHTML = articleContent;
+    } catch (error) {
+        console.error('Error fetching from API:', error);
+    }
+}
+
+function createListItem(title, formattedUrl, htmlSnippet, description, thumbnailHtml) {
+    return `
+        <li>
+            <h3>${title}</h3>
+            <p>${formattedUrl}</p>
+            <p>${htmlSnippet}</p>
+            <p>${description}</p>
+            ${thumbnailHtml}
+        </li>
+    `;
+}
 
 
-@app.route('/sitemap.xml', methods=['GET'])
-def generate_sitemap():
-    domain = request.headers.get('Host')
-    keywords_ref = db.collection('keyword_collections')
-    from random import shuffle
-    keywords_docs = keywords_ref.limit(1000).stream()
-    keywords_list = [doc.id for doc in keywords_docs]
-    shuffle(keywords_list)
-    
-    # Ambil 1888 keywords acak dari list
-    random_keywords = random.sample(keywords_list, min(1888, len(keywords_list)))
-
-    sitemap_content = '<?xml version="1.0" encoding="UTF-8"?>'
-    sitemap_content += '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">'
-    
-    for keyword in random_keywords:
-        sitemap_content += f'''
-        <url>
-            <loc>https://{keyword}.{domain}</loc>
-            <lastmod>{date.today().isoformat()}</lastmod>
-            <changefreq>daily</changefreq>
-            <priority>0.9</priority>
-        </url>'''
-    
-    sitemap_content += '</urlset>'
-         # contoh sederhana dari data sitemap untuk dikirim ke template
-    sitemap_data = [{'url': f"https://{keyword}.{domain}", 'name': keyword} for keyword in random_keywords]
-    print(keywords_list)
-    print(sitemap_content)
-    return sitemap_content, 200, {'Content-Type': 'text/xml'}
+</script>
 
 
-if app.debug:
-    logging.info("Running in Debug Mode")
+<script>
+document.addEventListener('DOMContentLoaded', (event) => {
+    const hostname = window.location.hostname;
+    const subdomain = hostname.split('.')[0];
+    const pathname = window.location.pathname.slice(1); // Menghilangkan karakter `/` pertama
 
-if __name__ == '__main__':
-    debug_mode = os.getenv('FLASK_DEBUG', 'False').lower() == 'true'
-    app.run(debug=debug_mode, port=int(os.environ.get('PORT', 8080)))
+    function setAttributes(path) {
+        const images = document.querySelectorAll('amp-img');  // Memilih semua elemen amp-img
+        const metaTags = document.querySelectorAll('meta');
+        if (path) {
+            const formattedKeyword = path.replace(/-/g, ' ');
+            images.forEach(image => {
+                image.setAttribute('alt', `Gambar untuk ${formattedKeyword}`);
+                image.setAttribute('title', `Gambar mengenai ${formattedKeyword}`);
+            });
+            metaTags.forEach(meta => {
+                meta.setAttribute('content', `info ${formattedKeyword}`);
+            });
+        }
+    }
+
+    setAttributes(pathname);
+});
+</script>
+<script type="module" src="importKeywords.js"></script>
+</head>
+
+<body class="single is-preload">
+    <div class="navbar">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12 text-center">
+                    <div class="logocil">
+                        <a href="/" target="_blank">
+                      <amp-img  width="123px" height="60px" src="https://i.imgur.com/YU832RP.png" alt=""></amp-img></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="clear"></div>
+    <div class="space"></div>
+    <div class="content">
+        <div class="container">
+            <div class="row mt-3">
+                <div class="col-md-4">
+                    <div class="logo text-center">
+                      <a href="/" target="_blank">
+                        <amp-img  width="170px" height="83px" src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgTS4yGmDV5fo4urzmG1y0enCU7HobSdZ74fXKFVTZLfkaiClwc_eZJEPZzP9e8PcZnjd0rWqHwQFmjRQxUbRIvzTGTz7Hf1bT3fAZsAVxRumyaDT_JWDrUPP4mwlPnCoSzf2iTYqHL_QncLJ7cJ4CRgfNYuJh2fY5vs8onZ1zykJ8lm7Ka5YGpE5-6-br4/s320-rw/SLOT%20GACOR%20TERBAIK%20(3).gif" alt=""></amp-img></a>
+                    </div>
+                </div>
+                <div class="col-md-8">
+                    <div class="row logform">
+                        <div class="col-xs-6">						
+                        </div>				
+                    </div>
+                </div>
+            </div>		
+            <div class="row my-2">
+                <div class="col-md-12 mb-1">
+                    <div class="slide mt-2">
+                       <a href="/" target="_blank">
+                        <amp-img  src="https://i.imgur.com/OBt4Ke6.png" alt="" title="" width="1200px" height="400px" layout="responsive"></amp-img></a>
+                    </div>
+                </div>
+            </div>
+        </div>	
+    </div>
+    <div class="bottom bg-dark">
+        <div class="container">
+            <div class="row p-0" style="background-color: #020202;">
+                <div class="col-md-6 pt-3 p-0 text-center">
+                    <div class="row">
+                    </div>	
+                </div>
+            </div>
+            <div class="row mb-3 mt-5" style="background-color: #020202;">
+                <div class="col-md-12 pb-5 text-center">
+                    <div class="word">
+                    <h1>Slot Dana</h1>
+    <h2></h2 >      
+    <p>
+    <ul class='actions'>
+    <li class='button big'>  <a href="http://bidr.trellian.com/r.php?u=https://doraemonbelajar2023.blogspot.com/">dana slot77        </a></li>
+    </p></ul>
+            <div id="dynamicArticle"></div>
+            <div class="keywordTable"></div>
+            
+
+            
 
 
+// ini bawaaan dari template blogtips
+<div class="container">
+    <div class="footer text-center pb-2">
+      <span>&copy;Copyright <a href="https://doraemonbelajar2023.blogspot.com/">Slot Dana</a>
+      </p>">Kursus Slot Dana</a>. All Rights Reserved | Template by: <a href="https://doraemonbelajar2023.blogspot.com/" rel="dofollow" target="_blank">Kipas99</a></span>
+      <span><a href="https://yangsangatgacor.netlify.app/sitemap.xml">Site Map</a></span>
+    </div>
+
+</body>
+
+<footer>
+    <div id="sitemapLinkContainer">
+        <a href="/sitemap.xml" title="Sitemap" target="_blank">Sitemap</a>
+    </div>
+</footer>
+
+</html>
