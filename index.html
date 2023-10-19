@@ -207,7 +207,7 @@ sitemapLinkContainer.appendChild(sitemapLink);
             const apiKey = 'AIzaSyDbAHHH8mkJvCMPBjL0l_HUAkzkN90n3Sk';
             const engineId = '30dfd31d44f5947c1';
             const query = keywordFromPath.replace(/-/g, ' ');
-            const response = await fetch(`https://www.googleapis.com/customsearch/v1?key=${apiKey}&q=${query}&cx=${engineId}&q=${keyword}&num=10&fields=items(title,link,snippet,pagemap)&sort=date`);
+            const url = `https://www.googleapis.com/customsearch/v1?key=${apiKey}&q=${query}&cx=${engineId}&num=7&fields=items(title,link,snippet,pagemap,cacheId,displayLink,formattedUrl,htmlFormattedUrl,htmlSnippet,htmlTitle,kind)`;
             const data = await response.json();
         
         // Analisis data, contohnya bisa berupa penghitungan jumlah hasil, atau analisis sentimen dari snippet, dll.
