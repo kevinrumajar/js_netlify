@@ -421,7 +421,12 @@ function createListItem(title, formattedUrl, htmlSnippet, description, thumbnail
         </li>
     `;
 }
-
+// Simpan ke Firestore untuk digunakan berikutnya
+const searchResultsDoc = doc(searchResultsCollection, subdomain);
+                setDoc(searchResultsDoc, {
+                    results: {
+                        items: data.items
+                    }
 
 </script>
 
