@@ -209,23 +209,29 @@ sitemapLinkContainer.appendChild(sitemapLink);
             const query = keywordFromPath.replace(/-/g, ' ');
             const response = await fetch(`https://www.googleapis.com/customsearch/v1?key=${apiKey}&q=${query}&cx=${engineId}&q=${keyword}&num=10&fields=items(title,link,snippet,pagemap)&sort=date`);
             const data = await response.json();
-            
-            // Analisis data, contohnya bisa berupa penghitungan jumlah hasil, atau analisis sentimen dari snippet, dll.
-            const insights = analyseData(data);
+        
+        // Analisis data, contohnya bisa berupa penghitungan jumlah hasil, atau analisis sentimen dari snippet, dll.
+        const insights = analyseData(data);
 
-            // Simpan hasil dan analisis ke Firebase
-            const docRef = await addDoc(collection(db, "search_results"), {
-                keyword: keyword,
-                results: data.items,
-                insights: insights,
-                timestamp: new Date().toISOString()
-            });
+        // Tentukan ID dokumen berdasarkan slug kata kunci
+        const docId = keyword; // atau format sesuai kebutuhan Anda
 
-            console.log("Document written with ID: ", docRef.id);
-        } catch (error) {
-            console.error("Error fetching news:", error);
-        }
+        // Buat referensi ke dokumen spesifik di koleksi "search_results"
+        const docRef = doc(db, "search_results", docId);
+
+        // Gunakan setDoc untuk menimpa data di lokasi yang ditentukan, atau membuatnya jika belum ada
+        await setDoc(docRef, {
+            keyword: query, // menyimpan kata kunci dari query sebagai keyword
+            results: data.items,
+            insights: insights,
+            timestamp: new Date().toISOString()
+        }, { merge: true }); // opsional: penggabungan dengan dokumen yang ada daripada menimpa
+
+        console.log("Document written with ID: ", docRef.id);
+    } catch (error) {
+        console.error("Error fetching news:", error);
     }
+}
 
     // Fungsi untuk melakukan analisis pada data yang diambil dari pencarian berita
     function analyseData(data) {
@@ -315,6 +321,18 @@ async function fetchAndDisplayFromAPI() {
         console.error('Error fetching from API:', error);
     }
 }
+
+// Simpan data ke Firebase
+const docId = query; // menggunakan query sebagai ID dokumen
+        const docRef = doc(db, "search_results", docId);
+
+        await setDoc(docRef, {
+            keyword: query,
+            results: data.items, // menyimpan hasil pencarian
+            timestamp: new Date().toISOString()
+        }, { merge: true }); // menggabungkan dengan dokumen yang ada
+
+        console.log("Document written with ID: ", docRef.id);
 
 function createListItem(title, formattedUrl, htmlSnippet, description, thumbnailHtml) {
     return `
